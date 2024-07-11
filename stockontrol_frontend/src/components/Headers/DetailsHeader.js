@@ -5,7 +5,7 @@ import { BsArrowLeftCircle } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import Typography from "../../common/Typography/Typography";
 
-const DetailsHeader = () => {
+const DetailsHeader = ({ text }) => {
   return (
     <div className="row p-4 bg-primary">
       <div className="col-2">
@@ -20,7 +20,7 @@ const DetailsHeader = () => {
       </div>
 
       <div className="col-4 offset-2">
-        <Typography level={"h1"} text={"Detalle del Producto"} />
+        <Typography level={"h1"} text={text} />
       </div>
 
       <div className="col-2">

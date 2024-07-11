@@ -3,11 +3,11 @@ import Button from "react-bootstrap/Button";
 import { BsPlusCircle } from "react-icons/bs";
 import Typography from "../../common/Typography/Typography";
 
-const SearchHeader = () => {
+const SearchHeader = ({ text }) => {
   return (
     <div className="row p-4 bg-primary">
       <div className="col-6 offset-3">
-        <Typography level={"h1"} text={"Buscar un Producto"} />
+        <Typography level={"h1"} text={text} />
       </div>
       <div className="col-2">
         <Button

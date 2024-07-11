@@ -7,11 +7,11 @@ function App() {
   return (
     <div className="App">
       <h1>Stockontrol</h1>
-      <SearchHeader />
+      <SearchHeader text={"Buscar un Producto"} />
       <div className="my-2"></div>
-      <DetailsHeader />
+      <DetailsHeader text={"Detalle del producto"} />
       <div className="my-2"></div>
-      <CreateHeader />
+      <CreateHeader text={"Crear un Producto"} />
     </div>
   );
 }
