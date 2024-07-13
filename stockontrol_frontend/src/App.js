@@ -11,35 +11,78 @@ import CreateCategoryPage from "./pages/Category/CreateCategoryPage";
 import SearchUserPage from "./pages/User/SearchUserPage";
 import DetailsUserPage from "./pages/User/DetailsUserPage";
 import CreateUserPage from "./pages/User/CreateUserPage";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <SearchProductPage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/product/details",
+    element: <DetailsProductPage />,
+  },
+  {
+    path: "/product/create",
+    element: <CreateProductPage />,
+  },
+  {
+    path: "/supplier/search",
+    element: <SearchSupplierPage />,
+  },
+  {
+    path: "/supplier/details",
+    element: <DetailsSupplierPage />,
+  },
+  {
+    path: "/supplier/create",
+    element: <CreateSupplierPage />,
+  },
+  {
+    path: "/category/search",
+    element: <SearchCategoryPage />,
+  },
+  {
+    path: "/category/details",
+    element: <DetailsCategoryPage />,
+  },
+  {
+    path: "/category/create",
+    element: <CreateCategoryPage />,
+  },
+  {
+    path: "/user/search",
+    element: <SearchUserPage />,
+  },
+  {
+    path: "/user/details",
+    element: <DetailsUserPage />,
+  },
+  {
+    path: "/user/create",
+    element: <CreateUserPage />,
+  },
+]);
 
 function App() {
   return (
     <div className="App">
       <h1>Stockontrol</h1>
+      <RouterProvider router={router} />
       Product
-      <SearchProductPage />
       <div className="my-2"></div>
-      <DetailsProductPage />
       <div className="my-2"></div>
-      <CreateProductPage />
       Supplier
-      <SearchSupplierPage />
       <div className="my-2"></div>
-      <DetailsSupplierPage />
       <div className="my-2"></div>
-      <CreateSupplierPage />
       Category
-      <SearchCategoryPage />
       <div className="my-2"></div>
-      <DetailsCategoryPage />
       <div className="my-2"></div>
-      <CreateCategoryPage />
       User
-      <SearchUserPage />
       <div className="my-2"></div>
-      <DetailsUserPage />
       <div className="my-2"></div>
-      <CreateUserPage />
     </div>
   );
 }
