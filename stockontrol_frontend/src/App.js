@@ -13,6 +13,7 @@ import DetailsUserPage from "./pages/User/DetailsUserPage";
 import CreateUserPage from "./pages/User/CreateUserPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import SideBar from "./components/SideBar/SideBar";
 
 const router = createBrowserRouter([
   {
@@ -71,18 +72,6 @@ function App() {
     <div className="App">
       <h1>Stockontrol</h1>
       <RouterProvider router={router} />
-      Product
-      <div className="my-2"></div>
-      <div className="my-2"></div>
-      Supplier
-      <div className="my-2"></div>
-      <div className="my-2"></div>
-      Category
-      <div className="my-2"></div>
-      <div className="my-2"></div>
-      User
-      <div className="my-2"></div>
-      <div className="my-2"></div>
     </div>
   );
 }
