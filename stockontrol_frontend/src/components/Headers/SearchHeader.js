@@ -6,21 +6,23 @@ import { Link } from "react-router-dom";
 
 const SearchHeader = ({ text, pathCreate }) => {
   return (
-    <div className="row p-4 bg-primary">
-      <div className="col-6 offset-3">
-        <Typography level={"h1"} text={text} />
-      </div>
-      <div className="col-2">
-        <Link to={pathCreate}>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark"
-          >
-            Crear Producto
-            <BsPlusCircle className="ms-2 text-black " size={"1.4em"} />
-          </Button>
-        </Link>
+    <div className="p-4 bg-primary ">
+      <div className="row">
+        <div className="col-6 offset-3">
+          <Typography level={"h1"} text={text} />
+        </div>
+        <div className="col-2">
+          <Link to={pathCreate}>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="text-black border-dark"
+            >
+              Crear Producto
+              <BsPlusCircle className="ms-2 text-black " size={"1.4em"} />
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
