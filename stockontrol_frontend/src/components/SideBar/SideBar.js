@@ -13,7 +13,7 @@ const SideBar = () => {
 
   const showSidebar = () => {
     if (sidebar) {
-      setActiveSubnav(null); // Close all subnavs when sidebar is collapsed
+      setActiveSubnav(null);
     }
     setSidebar(!sidebar);
     if (!sidebar) {
