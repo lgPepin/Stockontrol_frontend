@@ -2,6 +2,7 @@ import "./App.css";
 import SearchProductPage from "./pages/Product/SearchProductPage";
 import DetailsProductPage from "./pages/Product/DetailsProductPage";
 import CreateProductPage from "./pages/Product/CreateProductPage";
+import UpdateProductPage from "./pages/Product/UpdateProductPage";
 import SearchSupplierPage from "./pages/Supplier/SearchSupplierPage";
 import DetailsSupplierPage from "./pages/Supplier/DetailsSupplierPage";
 import CreateSupplierPage from "./pages/Supplier/CreateSupplierPage";
@@ -13,7 +14,6 @@ import DetailsUserPage from "./pages/User/DetailsUserPage";
 import CreateUserPage from "./pages/User/CreateUserPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
-import SideBar from "./components/SideBar/SideBar";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/product/create",
     element: <CreateProductPage />,
+  },
+  {
+    path: "/product/update",
+    element: <UpdateProductPage />,
   },
   {
     path: "/supplier/search",
