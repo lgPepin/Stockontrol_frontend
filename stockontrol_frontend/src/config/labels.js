@@ -3,6 +3,7 @@ const labels = {
     SEARCH_PRODUCT_PAGE: "Buscar Producto",
     DETAILS_PRODUCT_PAGE: "Detalle Producto",
     CREATE_PRODUCT_PAGE: "Crear Producto",
+    UPDATE_PRODUCT_PAGE: "Actualizar Producto",
   },
   SUPPLIER: {
     SEARCH_SUPPLIER_PAGE: "Buscar Proveedor",

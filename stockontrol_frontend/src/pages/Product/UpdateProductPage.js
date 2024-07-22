@@ -1,45 +1,37 @@
 import React, { useState } from "react";
-import CreateHeader from "../../components/Headers/CreateHeader";
+import UpdateHeader from "../../components/Headers/UpdateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
 import Axios from "axios";
 import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
+import { useLocation } from "react-router-dom";
 
-const CreateProductPage = () => {
-  const [productName, setProductName] = useState("");
-  const [supplier, setSupplier] = useState("");
-  const [category, setCategory] = useState("");
-  const [stock, setStock] = useState();
-  const [purchasePrice, setPurchasePrice] = useState();
-  const [sellingPrice, setSellingPrice] = useState();
-  const [status, setStatus] = useState("");
-  const [productsList, setProductsList] = useState([]);
+const UpdateProductPage = () => {
+  const location = useLocation();
+  const product = location.state?.product || {};
+
+  const [productName, setProductName] = useState(product.product_name || "");
+  const [supplier, setSupplier] = useState(product.supplier || "");
+  const [category, setCategory] = useState(product.category || "");
+  const [stock, setStock] = useState(product.stock || "");
+  const [purchasePrice, setPurchasePrice] = useState(
+    product.purchase_price || ""
+  );
+  const [sellingPrice, setSellingPrice] = useState(product.selling_price || "");
+  const [status, setStatus] = useState(product.status || "");
 
   const submitProduct = () => {
-    Axios.post("http://localhost:8080/api/insert", {
-      productName: productName,
+    Axios.put(`http://localhost:8080/api/update/${product.product_id}`, {
+      product_name: productName,
       supplier: supplier,
       category: category,
       stock: stock,
-      purchasePrice: purchasePrice,
-      sellingPrice: sellingPrice,
+      purchase_price: purchasePrice,
+      selling_price: sellingPrice,
       status: status,
     });
-
-    setProductsList([
-      ...productsList,
-      {
-        productname: productName,
-        supplier: supplier,
-        category: category,
-        stock: stock,
-        purchasePrice: purchasePrice,
-        sellingPrice: sellingPrice,
-        status: status,
-      },
-    ]);
 
     setProductName("");
     setSupplier("");
@@ -52,8 +44,8 @@ const CreateProductPage = () => {
 
   return (
     <>
-      <CreateHeader
-        text={labels.PRODUCT.CREATE_PRODUCT_PAGE}
+      <UpdateHeader
+        text={labels.PRODUCT.UPDATE_PRODUCT_PAGE}
         pathSearch={"/"}
       />
       <div className="row align-items-start container_principal">
@@ -201,4 +193,4 @@ const CreateProductPage = () => {
   );
 };
 
-export default CreateProductPage;
+export default UpdateProductPage;

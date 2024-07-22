@@ -4,7 +4,7 @@ import { BsArrowLeftCircle } from "react-icons/bs";
 import Typography from "../../common/Typography/Typography";
 import { Link } from "react-router-dom";
 
-const CreateHeader = ({ text, pathSearch }) => {
+const UpdateHeader = ({ text, pathSearch }) => {
   return (
     <div className="p-4 bg-warning">
       <div className="row">
@@ -21,7 +21,7 @@ const CreateHeader = ({ text, pathSearch }) => {
           </Link>
         </div>
 
-        <div className="offset-3 col-3">
+        <div className="offset-3 col-4">
           <Typography level={"h1"} text={text} />
         </div>
       </div>
@@ -29,4 +29,4 @@ const CreateHeader = ({ text, pathSearch }) => {
   );
 };
 
-export default CreateHeader;
+export default UpdateHeader;
