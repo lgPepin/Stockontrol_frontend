@@ -9,6 +9,7 @@ const labels = {
     SEARCH_SUPPLIER_PAGE: "Buscar Proveedor",
     DETAILS_SUPPLIER_PAGE: "Detalle Proveedor",
     CREATE_SUPPLIER_PAGE: "Crear Proveedor",
+    UPDATE_SUPPLIER_PAGE: "Actualizar Proveedor",
   },
   CATEGORY: {
     SEARCH_CATEGORY_PAGE: "Buscar Categoría",
