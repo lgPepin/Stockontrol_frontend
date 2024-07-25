@@ -6,6 +6,7 @@ import UpdateProductPage from "./pages/Product/UpdateProductPage";
 import SearchSupplierPage from "./pages/Supplier/SearchSupplierPage";
 import DetailsSupplierPage from "./pages/Supplier/DetailsSupplierPage";
 import CreateSupplierPage from "./pages/Supplier/CreateSupplierPage";
+import UpdateSupplierPage from "./pages/Supplier/UpdateSupplierPage";
 import SearchCategoryPage from "./pages/Category/SearchCategoryPage";
 import DetailsCategoryPage from "./pages/Category/DetailsCategoryPage";
 import CreateCategoryPage from "./pages/Category/CreateCategoryPage";
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
   {
     path: "/supplier/create",
     element: <CreateSupplierPage />,
+  },
+  {
+    path: "/supplier/update",
+    element: <UpdateSupplierPage />,
   },
   {
     path: "/category/search",

@@ -6,21 +6,9 @@ import {
   BsPlusCircle,
 } from "react-icons/bs";
 import Typography from "../../common/Typography/Typography";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const DetailsHeader = ({
-  text,
-  pathSearch,
-  pathCreate,
-  pathUpdate,
-  product,
-}) => {
-  const navigate = useNavigate();
-
-  const goToUpdateProductPage = (product) => {
-    navigate("/product/update", { state: { product } });
-  };
-
+const DetailsHeader = ({ text, pathSearch, pathCreate, onClick }) => {
   return (
     <div className="p-4 bg-warning">
       <div className="row">
@@ -42,17 +30,15 @@ const DetailsHeader = ({
         </div>
 
         <div className="col-2">
-          {/* <Link to={pathUpdate}> */}
           <Button
             variant="secondary"
             size="lg"
             className="text-black border-dark"
-            onClick={() => goToUpdateProductPage(product)}
+            onClick={onClick}
           >
             Editar Producto
             <BsFillPencilFill className="ms-2" size={"1.4em"} />
           </Button>
-          {/* </Link> */}
         </div>
 
         <div className="col-2">

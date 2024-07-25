@@ -1,27 +1,37 @@
-import React from "react";
-import DetailsHeader from "../../components/Headers/DetailsHeader";
+import React, { useState } from "react";
+import UpdateHeader from "../../components/Headers/UpdateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
-import Typography from "../../common/Typography/Typography";
+import Axios from "axios";
 import Input from "../../common/Input/Input";
-import { useLocation, useNavigate } from "react-router-dom";
+import Typography from "../../common/Typography/Typography";
+import Button from "react-bootstrap/Button";
+import { useLocation } from "react-router-dom";
 
-const DetailsProductPage = () => {
+const UpdateSupplierPage = () => {
   const location = useLocation();
-  const product = location.state?.product || {};
-  const navigate = useNavigate();
+  const supplier = location.state?.supplier || {};
 
-  const goToUpdateProductPage = (product) => {
-    navigate("/product/update", { state: { product } });
+  const [supplierName, setSupplierName] = useState(
+    supplier.supplier_name || ""
+  );
+
+  const submitProduct = () => {
+    Axios.put(
+      `http://localhost:8080/api/v1/suppliers/update/${supplier.supplier_id}`,
+      {
+        supplier_name: supplierName,
+      }
+    );
+
+    setSupplierName("");
   };
 
   return (
     <>
-      <DetailsHeader
-        text={labels.PRODUCT.DETAILS_PRODUCT_PAGE}
-        pathSearch={"/"}
-        pathCreate={"/product/create"}
-        onClick={() => goToUpdateProductPage(product)}
+      <UpdateHeader
+        text={labels.SUPPLIER.UPDATE_SUPPLIER_PAGE}
+        pathSearch={"/supplier/search"}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -33,17 +43,20 @@ const DetailsProductPage = () => {
               level="p"
               text="NOMBRE"
               className="label col-2 fw-bold"
-            />
+            ></Typography>
 
             <Input
               type="text"
-              name="productName"
-              value={product.product_name || ""}
+              name="supplierName"
+              value={supplierName}
+              placeholder="Ingrese el nombre del proveedor a actualizar"
               className="col-8 fs-2 ms-3 value"
-              readOnly
+              onChange={(e) => {
+                setSupplierName(e.target.value);
+              }}
             />
           </div>
-          <div className="value_label_container mb-4 ">
+          {/* <div className="value_label_container mb-4 ">
             <Typography
               level="p"
               text="PROVEEDOR"
@@ -53,9 +66,12 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="supplier"
-              value={product.supplier || ""}
+              value={supplier}
+              placeholder="Ingrese el nombre del proveedor"
               className="col-8 fs-2 ms-3 value"
-              readOnly
+              onChange={(e) => {
+                setSupplier(e.target.value);
+              }}
             />
           </div>
           <div className="value_label_container mb-4">
@@ -68,9 +84,12 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="category"
-              value={product.category || ""}
+              value={category}
+              placeholder="Ingrese el nombre de la categoría"
               className="col-8 fs-2 ms-3 value"
-              readOnly
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
             />
           </div>
           <div className="value_label_container mb-4">
@@ -83,9 +102,12 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="stock"
-              value={product.stock || ""}
+              value={stock}
+              placeholder="Ingrese la cantidad en stock"
               className="col-8 fs-2 ms-3 value"
-              readOnly
+              onChange={(e) => {
+                setStock(e.target.value);
+              }}
             />
           </div>
           <div className="value_label_container mb-4 ">
@@ -98,9 +120,12 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="purchasePrice"
-              value={product.purchase_price || ""}
+              value={purchasePrice}
+              placeholder="Ingrese el precio de compra"
               className="col-8 fs-2 ms-3 value"
-              readOnly
+              onChange={(e) => {
+                setPurchasePrice(e.target.value);
+              }}
             />
           </div>
           <div className="value_label_container mb-4 ">
@@ -113,9 +138,12 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="sellingPrice"
-              value={product.selling_price || ""}
+              value={sellingPrice}
+              placeholder="Ingrese el precio de venta"
               className="col-8 fs-2 ms-3 value"
-              readOnly
+              onChange={(e) => {
+                setSellingPrice(e.target.value);
+              }}
             />
           </div>
           <div className="value_label_container">
@@ -128,15 +156,26 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="status"
-              value={product.status || ""}
+              value={status}
+              placeholder="Ingrese el estado"
               className="col-8 fs-2 ms-3 value"
-              readOnly
+              onChange={(e) => {
+                setStatus(e.target.value);
+              }}
             />
-          </div>
+          </div> */}
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-black border-dark mt-5 offset-5 col-2"
+            onClick={submitProduct}
+          >
+            Guardar
+          </Button>
         </div>
       </div>
     </>
   );
 };
 
-export default DetailsProductPage;
+export default UpdateSupplierPage;
