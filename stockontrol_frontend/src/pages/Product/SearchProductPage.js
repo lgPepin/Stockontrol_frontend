@@ -17,9 +17,10 @@ const SearchProductPage = () => {
   const [supplier, setSupplier] = useState("");
   const [category, setCategory] = useState("");
   const [productsList, setProductsList] = useState([]);
-  const [newSupplier, setNewSupplier] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const [noResultsMessage, setNoResultsMessage] = useState("");
+  const [successDeleteMessage, setSuccessDeleteMessage] = useState("");
+  const [errorDeleteMessage, setErrorDeleteMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -28,18 +29,13 @@ const SearchProductPage = () => {
   };
 
   const goToUpdateProductPage = (product) => {
-    navigate("/product/update", { state: { product } });
+    console.log("Je cherche product: ", product);
+    navigate("/product/update", {
+      state: { product },
+    });
   };
 
-  // useEffect(() => {
-  //   Axios.get("http://localhost:8080/api/get").then((response) => {
-  //     setProductsList(response.data.rows);
-  //     console.log(response.data.rows);
-  //   });
-  // }, []);
-
   const searchProduct = () => {
-    // Vérifiez si les champs de recherche sont valides
     if (
       (productName.length > 0 && productName.length < 3) ||
       (supplier.length > 0 && supplier.length < 3) ||
@@ -52,11 +48,9 @@ const SearchProductPage = () => {
       return;
     }
 
-    // Réinitialiser les messages d'avertissement et de résultat
     setWarningMessage("");
 
-    // Effectuer la requête GET avec les paramètres de recherche
-    Axios.get("http://localhost:8080/api/get", {
+    Axios.get("http://localhost:8080/api/v1/get", {
       params: {
         searchProductName: productName,
         searchSupplier: supplier,
@@ -64,13 +58,12 @@ const SearchProductPage = () => {
       },
     })
       .then((response) => {
-        // Vérifiez si la réponse contient des résultats
         if (response.data.length === 0) {
           setNoResultsMessage("No producto encontrado");
         } else {
           setNoResultsMessage("");
         }
-        // Mettre à jour la liste des produits
+
         setProductsList(response.data || []);
       })
       .catch((error) => {
@@ -78,44 +71,32 @@ const SearchProductPage = () => {
       });
   };
 
-  // const submitProduct = () => {
-  //   Axios.post("http://localhost:8080/api/insert", {
-  //     productName: productName,
-  //     supplier: supplier,
-  //   });
-
-  //   setProductsList([
-  //     ...productsList,
-  //     { productname: productName, supplier: supplier },
-  //   ]);
-  // };
-
   const deleteProduct = (productName) => {
-    Axios.delete(`http://localhost:8080/api/delete/${productName}`);
-
-    setProductsList((prevList) =>
-      prevList.filter((product) => product.product_name !== productName)
-    );
-  };
-
-  const updateProduct = (product) => {
-    Axios.put("http://localhost:8080/api/update", {
-      product_name: product,
-      supplier: newSupplier,
-    });
-
-    setProductsList((prevList) =>
-      prevList.map((prod) =>
-        prod.product_name === product
-          ? { ...prod, supplier: newSupplier }
-          : prod
-      )
-    );
-    setNewSupplier("");
+    Axios.delete(`http://localhost:8080/api/v1/delete/${productName}`)
+      .then((response) => {
+        setSuccessDeleteMessage(response.data.message);
+        setProductsList((prevList) =>
+          prevList.filter((product) => product.product_name !== productName)
+        );
+        setTimeout(() => {
+          setSuccessDeleteMessage("");
+        }, 5000);
+        return;
+      })
+      .catch((error) => {
+        console.error("Error al eliminar el producto :", error);
+        setErrorDeleteMessage(
+          error.response?.data?.message || "Error a la supresión del producto"
+        );
+        setTimeout(() => {
+          setErrorDeleteMessage("");
+        }, 5000);
+        return;
+      });
   };
 
   const groupedBySupplier = productsList.reduce((acc, product) => {
-    const supplier = product.supplier || "Proveedor no conocido";
+    const supplier = product.supplier_name || "Proveedor no conocido";
     if (!acc[supplier]) {
       acc[supplier] = [];
     }
@@ -197,7 +178,15 @@ const SearchProductPage = () => {
             <Typography
               level="p"
               text={warningMessage}
-              className="text-danger mt-3"
+              className="text-danger mt-3 fs-3"
+            />
+          )}
+
+          {successDeleteMessage && (
+            <Typography
+              level="p"
+              text={successDeleteMessage}
+              className="text-primary mt-3 fs-3"
             />
           )}
 
@@ -220,12 +209,12 @@ const SearchProductPage = () => {
                 <table className="table table-striped table_size">
                   <thead>
                     <tr>
-                      <th className="col-2">Nombre</th>
+                      <th className="col-2">Nom</th>
                       <th className="col-1">Stock</th>
-                      <th className="col-1">Categoria</th>
-                      <th className="col-1 table-icon">Ver</th>
-                      <th className="col-1 table-icon">Editar</th>
-                      <th className="col-1 table-icon">Eliminar</th>
+                      <th className="col-1">Catégorie</th>
+                      <th className="col-1 table-icon">Voir</th>
+                      <th className="col-1 table-icon">Éditer</th>
+                      <th className="col-1 table-icon">Supprimer</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -252,7 +241,10 @@ const SearchProductPage = () => {
                           <BsFillPencilFill
                             className="icon custom_icon"
                             size={"1.3em"}
-                            onClick={() => goToUpdateProductPage(val)}
+                            onClick={() => {
+                              console.log("Product clicked: ", val);
+                              goToUpdateProductPage(val);
+                            }}
                           />
                         </td>
                         <td className="table-icon">
@@ -271,122 +263,6 @@ const SearchProductPage = () => {
           )}
         </div>
       </div>
-
-      {/* <div className="row align-items-start" style={{ height: "100vh" }}>
-        <div className="col-2" style={{ height: "100%" }}>
-          <SideBar />
-        </div>
-        <div
-          className="col-10 mt-4"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div className="d-flex align-items-center justify-content-center">
-            <Typography
-              level="p"
-              text="NOMBRE"
-              className="fs-3 label"
-            ></Typography>
-
-            <Input
-              type="text"
-              name="productName"
-              placeholder="Ingrese el nombre del producto a buscar"
-              className="w-50 fs-2 ms-3 input"
-              onChange={(e) => {
-                setProductName(e.target.value);
-              }}
-            />
-          </div>
-          <Typography level="p" text="PROVEEDOR" className="fs-3"></Typography>
-          <Input
-            type="text"
-            name="productName"
-            placeholder="Ingrese el nombre del producto a buscar"
-            className="w-50 fs-2 input"
-            onChange={(e) => {
-              setProductName(e.target.value);
-            }}
-          />
-          <Typography level="p" text="CATEGORIA" className="fs-3"></Typography>
-          <Input
-            type="text"
-            name="productName"
-            placeholder="Ingrese el nombre del producto a buscar"
-            className="w-50 fs-2 input"
-            onChange={(e) => {
-              setProductName(e.target.value);
-            }}
-          />
-          <label>Nombre del Proveedor</label>
-          <input
-            type="text"
-            name="supplierName"
-            className="mb-4"
-            style={{ width: 300, height: 60, fontSize: 25 }}
-            onChange={(e) => {
-              setSupplier(e.target.value);
-            }}
-          />
-
-          <button onClick={submitProduct}>Submit</button>
-
-          {productsList.map((val, index) => {
-            return (
-              <div
-                className="card"
-                key={index}
-                style={{
-                  width: 500,
-                  height: 150,
-                  border: "2px solid black",
-                  borderRadius: 15,
-                  margin: 10,
-                  textAlign: "center",
-                  fontFamily:
-                    '"Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", "Arial", "sans-serif"',
-                }}
-              >
-                <h1>{val.productname} </h1>
-                <p>{val.supplier}</p>
-
-                <div
-                  style={{
-                    display: "flex ",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <button
-                    style={{ width: "100px", height: "30px" }}
-                    onClick={() => {
-                      deleteProduct(val.productname);
-                    }}
-                  >
-                    Delete
-                  </button>
-                  <input
-                    type="text"
-                    id="upsateInput"
-                    style={{ width: 200, height: 20, marginBottom: 10 }}
-                    onChange={(e) => setNewSupplier(e.target.value)}
-                    value={newSupplier}
-                  />
-                  <button
-                    style={{ width: "100px", height: "30px" }}
-                    onClick={() => {
-                      updateProduct(val.productname);
-                    }}
-                  >
-                    Update
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div> */}
     </>
   );
 };

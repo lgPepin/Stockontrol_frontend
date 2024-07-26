@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CreateHeader from "../../components/Headers/CreateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
@@ -6,48 +6,94 @@ import Axios from "axios";
 import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
+import CustomSelect from "../../common/Select/CustomSelect";
 
 const CreateProductPage = () => {
   const [productName, setProductName] = useState("");
-  const [supplier, setSupplier] = useState("");
+  const [supplierId, setSupplierId] = useState("");
   const [category, setCategory] = useState("");
-  const [stock, setStock] = useState();
-  const [purchasePrice, setPurchasePrice] = useState();
-  const [sellingPrice, setSellingPrice] = useState();
+  const [stock, setStock] = useState("");
+  const [purchasePrice, setPurchasePrice] = useState("");
+  const [sellingPrice, setSellingPrice] = useState("");
   const [status, setStatus] = useState("");
   const [productsList, setProductsList] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/suppliers").then(
+      (response) => {
+        setSuppliers(response.data);
+      }
+    );
+  }, []);
+
+  const validInputs = () => {
+    return (
+      productName &&
+      supplierId &&
+      category &&
+      stock &&
+      purchasePrice &&
+      sellingPrice &&
+      status
+    );
+  };
 
   const submitProduct = () => {
-    Axios.post("http://localhost:8080/api/insert", {
+    if (!validInputs()) {
+      setError("Todos los campos deben estar llenos para crear el producto.");
+      setMessage("");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
+      return;
+    }
+
+    Axios.post("http://localhost:8080/api/v1/create", {
       productName: productName,
-      supplier: supplier,
+      supplierId: supplierId,
       category: category,
       stock: stock,
       purchasePrice: purchasePrice,
       sellingPrice: sellingPrice,
       status: status,
-    });
+    })
+      .then(() => {
+        setProductsList([
+          ...productsList,
+          {
+            productname: productName,
+            supplierId: supplierId,
+            category: category,
+            stock: stock,
+            purchasePrice: purchasePrice,
+            sellingPrice: sellingPrice,
+            status: status,
+          },
+        ]);
 
-    setProductsList([
-      ...productsList,
-      {
-        productname: productName,
-        supplier: supplier,
-        category: category,
-        stock: stock,
-        purchasePrice: purchasePrice,
-        sellingPrice: sellingPrice,
-        status: status,
-      },
-    ]);
-
-    setProductName("");
-    setSupplier("");
-    setCategory("");
-    setStock("");
-    setPurchasePrice("");
-    setSellingPrice("");
-    setStatus("");
+        setProductName("");
+        setSupplierId("");
+        setCategory("");
+        setStock("");
+        setPurchasePrice("");
+        setSellingPrice("");
+        setStatus("");
+        setMessage("El producto ha sido guardado con éxito.");
+        setError("");
+        setTimeout(() => {
+          setMessage("");
+        }, 5000);
+      })
+      .catch((error) => {
+        setMessage("");
+        setError("Error en el proceso de creación: " + error.message);
+        setTimeout(() => {
+          setError("");
+        }, 5000);
+      });
   };
 
   return (
@@ -86,15 +132,20 @@ const CreateProductPage = () => {
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
-              type="text"
+            <CustomSelect
               name="supplier"
-              value={supplier}
-              placeholder="Ingrese el nombre del proveedor"
-              className="col-8 fs-2 ms-3 value"
+              value={supplierId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                supplierId ? "not-default" : ""
+              }`}
               onChange={(e) => {
-                setSupplier(e.target.value);
+                setSupplierId(e.target.value);
               }}
+              options={suppliers.map((supplier) => ({
+                value: supplier.supplier_id,
+                label: supplier.supplier_name,
+              }))}
+              placeholder="Seleccione un proveedor"
             />
           </div>
           <div className="value_label_container mb-4">
@@ -187,6 +238,20 @@ const CreateProductPage = () => {
               }}
             />
           </div>
+          {message && (
+            <Typography
+              level="p"
+              text={message}
+              className="text-primary mt-5 fs-3"
+            />
+          )}
+          {error && (
+            <Typography
+              level="p"
+              text={error}
+              className="text-danger mt-5 fs-3"
+            />
+          )}
           <Button
             variant="secondary"
             size="lg"

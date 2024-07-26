@@ -37,3 +37,17 @@
 .custom_icon {
   cursor: pointer;
 }
+
+.custom_select {
+  color: #888;
+  height: 50px;
+  border: 2px solid black;
+}
+
+.custom_select option:not([value=""]) {
+  color: black;
+}
+
+.custom_select.not-default {
+  color: black;
+}
