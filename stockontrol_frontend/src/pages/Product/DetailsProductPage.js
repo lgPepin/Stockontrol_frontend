@@ -53,7 +53,7 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="supplier"
-              value={product.supplier || ""}
+              value={product.supplier_name || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />
