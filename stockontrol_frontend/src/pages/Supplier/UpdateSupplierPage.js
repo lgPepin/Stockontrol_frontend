@@ -15,16 +15,78 @@ const UpdateSupplierPage = () => {
   const [supplierName, setSupplierName] = useState(
     supplier.supplier_name || ""
   );
+  const [identificationNumber, setIdentificationNumber] = useState(
+    supplier.identification_number || ""
+  );
+  const [address, setAddress] = useState(supplier.address || "");
+  const [phone, setPhone] = useState(supplier.phone || "");
+  const [contactName, setContactName] = useState(supplier.contact_name || "");
+  const [orderDay, setOrderDay] = useState(supplier.order_day || "");
+  const [deliveryDay, setDeliveryDay] = useState(supplier.delivery_day || "");
+  const [status, setStatus] = useState(supplier.status || "");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const validInputs = () => {
+    return (
+      supplierName &&
+      identificationNumber &&
+      address &&
+      phone &&
+      contactName &&
+      orderDay &&
+      deliveryDay &&
+      status
+    );
+  };
 
   const submitProduct = () => {
+    if (!validInputs()) {
+      setError(
+        "Todos los campos deben estar llenos para actualizar el proveedor."
+      );
+      setMessage("");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
+      return;
+    }
+
     Axios.put(
       `http://localhost:8080/api/v1/suppliers/update/${supplier.supplier_id}`,
       {
         supplier_name: supplierName,
+        identification_number: identificationNumber,
+        address: address,
+        phone: phone,
+        contact_name: contactName,
+        order_day: orderDay,
+        delivery_day: deliveryDay,
+        status: status,
       }
-    );
-
-    setSupplierName("");
+    )
+      .then((response) => {
+        setSupplierName("");
+        setIdentificationNumber("");
+        setAddress("");
+        setPhone("");
+        setContactName("");
+        setOrderDay("");
+        setDeliveryDay("");
+        setStatus("");
+        setMessage("El proveedor ha sido actualizado con éxito.");
+        setError("");
+        setTimeout(() => {
+          setMessage("");
+        }, 5000);
+      })
+      .catch((error) => {
+        setMessage("");
+        setError("Error en el proceso de actualización: " + error.message);
+        setTimeout(() => {
+          setError("");
+        }, 5000);
+      });
   };
 
   return (
@@ -56,93 +118,111 @@ const UpdateSupplierPage = () => {
               }}
             />
           </div>
-          {/* <div className="value_label_container mb-4 ">
+          <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="PROVEEDOR"
+              text="IDENTIFICACION"
               className="label col-2 fw-bold"
             ></Typography>
 
             <Input
               type="text"
-              name="supplier"
-              value={supplier}
-              placeholder="Ingrese el nombre del proveedor"
+              name="identificationNumber"
+              value={identificationNumber}
+              placeholder="Ingrese el numero de identificación a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
-                setSupplier(e.target.value);
+                setIdentificationNumber(e.target.value);
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="CATEGORIA"
+              text="DIRECCION"
               className="label col-2 fw-bold"
             ></Typography>
 
             <Input
               type="text"
-              name="category"
-              value={category}
-              placeholder="Ingrese el nombre de la categoría"
+              name="address"
+              value={address}
+              placeholder="Ingrese la dirección del proveedor a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
-                setCategory(e.target.value);
+                setAddress(e.target.value);
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="STOCK"
+              text="TELEFONO"
               className="label col-2 fw-bold"
             ></Typography>
 
             <Input
               type="text"
-              name="stock"
-              value={stock}
-              placeholder="Ingrese la cantidad en stock"
+              name="phone"
+              value={phone}
+              placeholder="Ingrese el teléfono del proveedor a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
-                setStock(e.target.value);
+                setPhone(e.target.value);
               }}
             />
           </div>
           <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="PRECIO COMPRA"
+              text="NOMBRE CONTACTO"
               className="label col-2 fw-bold"
             ></Typography>
 
             <Input
               type="text"
-              name="purchasePrice"
-              value={purchasePrice}
-              placeholder="Ingrese el precio de compra"
+              name="contactName"
+              value={contactName}
+              placeholder="Ingrese el nombre del contacto a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
-                setPurchasePrice(e.target.value);
+                setContactName(e.target.value);
               }}
             />
           </div>
           <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="PRECIO VENTA"
+              text="DIA DE PEDIDO"
               className="label col-2 fw-bold"
             ></Typography>
 
             <Input
               type="text"
-              name="sellingPrice"
-              value={sellingPrice}
-              placeholder="Ingrese el precio de venta"
+              name="orderDay"
+              value={orderDay}
+              placeholder="Ingrese el dia de pedido del proveedor a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
-                setSellingPrice(e.target.value);
+                setOrderDay(e.target.value);
+              }}
+            />
+          </div>
+          <div className="value_label_container mb-4 ">
+            <Typography
+              level="p"
+              text="DIA DE ENTREGA"
+              className="label col-2 fw-bold"
+            ></Typography>
+
+            <Input
+              type="text"
+              name="deliveryDay"
+              value={deliveryDay}
+              placeholder="Ingrese el dia de entrega del proveedor a actualizar"
+              className="col-8 fs-2 ms-3 value"
+              onChange={(e) => {
+                setDeliveryDay(e.target.value);
               }}
             />
           </div>
@@ -157,13 +237,27 @@ const UpdateSupplierPage = () => {
               type="text"
               name="status"
               value={status}
-              placeholder="Ingrese el estado"
+              placeholder="Ingrese el estado del proveedor a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
                 setStatus(e.target.value);
               }}
             />
-          </div> */}
+          </div>
+          {message && (
+            <Typography
+              level="p"
+              text={message}
+              className="text-primary mt-5 fs-3"
+            />
+          )}
+          {error && (
+            <Typography
+              level="p"
+              text={error}
+              className="text-danger mt-5 fs-3"
+            />
+          )}
           <Button
             variant="secondary"
             size="lg"

@@ -70,14 +70,22 @@ const SearchSupplierPage = () => {
           prevList.filter((supplier) => supplier.supplier_name !== supplierName)
         );
         setConfirmationMessage(
-          `Le fournisseur ${supplierName} a été éliminé avec succès!`
+          `El proveedor ${supplierName} ha sido eliminado con éxito!`
         );
         setMessageType("primary");
+        setTimeout(() => {
+          setConfirmationMessage("");
+        }, 5000);
+        return;
       })
       .catch((error) => {
-        console.error("There was an error deleting the supplier!", error);
-        setConfirmationMessage("Erreur lors de la suppression du fournisseur.");
+        console.error("Error al suprimir el proveedor", error);
+        setConfirmationMessage("Error al suprimir el proveedor.");
         setMessageType("danger");
+        setTimeout(() => {
+          setConfirmationMessage("");
+        }, 5000);
+        return;
       });
   };
 

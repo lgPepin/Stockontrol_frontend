@@ -42,6 +42,111 @@ const DetailsSupplierPage = () => {
               readOnly
             />
           </div>
+          <div className="value_label_container mb-4">
+            <Typography
+              level="p"
+              text="IDENTIFICACION"
+              className="label col-2 fw-bold"
+            />
+
+            <Input
+              type="text"
+              name="identificationNumber"
+              value={supplier.identification_number || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
+          <div className="value_label_container mb-4">
+            <Typography
+              level="p"
+              text="DIRECCION"
+              className="label col-2 fw-bold"
+            />
+
+            <Input
+              type="text"
+              name="address"
+              value={supplier.address || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
+          <div className="value_label_container mb-4">
+            <Typography
+              level="p"
+              text="TELEFONO"
+              className="label col-2 fw-bold"
+            />
+
+            <Input
+              type="text"
+              name="phone"
+              value={supplier.phone || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
+          <div className="value_label_container mb-4">
+            <Typography
+              level="p"
+              text="NOMBRE CONTACTO"
+              className="label col-2 fw-bold"
+            />
+
+            <Input
+              type="text"
+              name="contactName"
+              value={supplier.contact_name || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
+          <div className="value_label_container mb-4">
+            <Typography
+              level="p"
+              text="DIA DE PEDIDO"
+              className="label col-2 fw-bold"
+            />
+
+            <Input
+              type="text"
+              name="orderDay"
+              value={supplier.order_day || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
+          <div className="value_label_container mb-4">
+            <Typography
+              level="p"
+              text="DIA DE ENTREGA"
+              className="label col-2 fw-bold"
+            />
+
+            <Input
+              type="text"
+              name="deliveryDay"
+              value={supplier.delivery_day || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
+          <div className="value_label_container mb-4">
+            <Typography
+              level="p"
+              text="ESTADO"
+              className="label col-2 fw-bold"
+            />
+
+            <Input
+              type="text"
+              name="status"
+              value={supplier.status || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
         </div>
       </div>
     </>
