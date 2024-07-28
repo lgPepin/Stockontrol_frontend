@@ -14,6 +14,7 @@ import UpdateCategoryPage from "./pages/Category/UpdateCategoryPage";
 import SearchUserPage from "./pages/User/SearchUserPage";
 import DetailsUserPage from "./pages/User/DetailsUserPage";
 import CreateUserPage from "./pages/User/CreateUserPage";
+import UpdateUserPage from "./pages/User/UpdateUserPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
   {
     path: "/user/create",
     element: <CreateUserPage />,
+  },
+  {
+    path: "/user/update",
+    element: <UpdateUserPage />,
   },
 ]);
 

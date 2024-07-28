@@ -14,7 +14,6 @@ import { Link, useNavigate } from "react-router-dom";
 const SearchSupplierPage = () => {
   const [supplierName, setSupplierName] = useState("");
   const [supplierList, setSupplierList] = useState([]);
-  const [newSupplier, setNewSupplier] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const [noResultsMessage, setNoResultsMessage] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
@@ -88,21 +87,6 @@ const SearchSupplierPage = () => {
         }, 5000);
         return;
       });
-  };
-
-  const updateSupplier = (supplier) => {
-    Axios.put("http://localhost:8080/api/update", {
-      supplier_name: supplier,
-    });
-
-    setSupplierList((prevList) =>
-      prevList.map((supply) =>
-        supply.supplier_name === supplier
-          ? { ...supply, supplier: newSupplier }
-          : supply
-      )
-    );
-    setNewSupplier("");
   };
 
   return (

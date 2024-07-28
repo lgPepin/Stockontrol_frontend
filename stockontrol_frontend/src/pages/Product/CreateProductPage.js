@@ -11,13 +11,14 @@ import CustomSelect from "../../common/Select/CustomSelect";
 const CreateProductPage = () => {
   const [productName, setProductName] = useState("");
   const [supplierId, setSupplierId] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [stock, setStock] = useState("");
   const [purchasePrice, setPurchasePrice] = useState("");
   const [sellingPrice, setSellingPrice] = useState("");
   const [status, setStatus] = useState("");
   const [productsList, setProductsList] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -29,11 +30,19 @@ const CreateProductPage = () => {
     );
   }, []);
 
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/categories").then(
+      (response) => {
+        setCategories(response.data);
+      }
+    );
+  }, []);
+
   const validInputs = () => {
     return (
       productName &&
       supplierId &&
-      category &&
+      categoryId &&
       stock &&
       purchasePrice &&
       sellingPrice &&
@@ -54,7 +63,7 @@ const CreateProductPage = () => {
     Axios.post("http://localhost:8080/api/v1/create", {
       productName: productName,
       supplierId: supplierId,
-      category: category,
+      categoryId: categoryId,
       stock: stock,
       purchasePrice: purchasePrice,
       sellingPrice: sellingPrice,
@@ -66,7 +75,7 @@ const CreateProductPage = () => {
           {
             productname: productName,
             supplierId: supplierId,
-            category: category,
+            categoryId: categoryId,
             stock: stock,
             purchasePrice: purchasePrice,
             sellingPrice: sellingPrice,
@@ -76,7 +85,7 @@ const CreateProductPage = () => {
 
         setProductName("");
         setSupplierId("");
-        setCategory("");
+        setCategoryId("");
         setStock("");
         setPurchasePrice("");
         setSellingPrice("");
@@ -155,7 +164,22 @@ const CreateProductPage = () => {
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="category"
+              value={categoryId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                categoryId ? "not-default" : ""
+              }`}
+              onChange={(e) => {
+                setCategoryId(e.target.value);
+              }}
+              options={categories.map((category) => ({
+                value: category.category_id,
+                label: category.category_name,
+              }))}
+              placeholder="Seleccione una categoria"
+            />
+            {/* <Input
               type="text"
               name="category"
               value={category}
@@ -164,7 +188,7 @@ const CreateProductPage = () => {
               onChange={(e) => {
                 setCategory(e.target.value);
               }}
-            />
+            /> */}
           </div>
           <div className="value_label_container mb-4">
             <Typography

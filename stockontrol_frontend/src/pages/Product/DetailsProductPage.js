@@ -68,7 +68,7 @@ const DetailsProductPage = () => {
             <Input
               type="text"
               name="category"
-              value={product.category || ""}
+              value={product.category_name || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />

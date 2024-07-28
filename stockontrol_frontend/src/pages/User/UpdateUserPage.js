@@ -1,20 +1,23 @@
 import React, { useState } from "react";
-import CreateHeader from "../../components/Headers/CreateHeader";
+import UpdateHeader from "../../components/Headers/UpdateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
 import Axios from "axios";
 import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
+import { useLocation } from "react-router-dom";
 
-const CreateUserPage = () => {
-  const [userLastName, setUserLastName] = useState("");
-  const [userFirstName, setUserFirstName] = useState("");
-  const [role, setRole] = useState("");
-  const [status, setStatus] = useState("");
-  const [usersList, setUsersList] = useState([]);
-  const [confirmationMessage, setConfirmationMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
+const UpdateUserPage = () => {
+  const location = useLocation();
+  const user = location.state?.user || {};
+
+  const [userLastName, setUserLastName] = useState(user.user_lastname || "");
+  const [userFirstName, setUserFirstName] = useState(user.user_firstname || "");
+  const [role, setRole] = useState(user.role || "");
+  const [status, setStatus] = useState(user.status || "");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const validInputs = () => {
     return userLastName && userFirstName && role && status;
@@ -22,64 +25,46 @@ const CreateUserPage = () => {
 
   const submitUser = () => {
     if (!validInputs()) {
-      setConfirmationMessage(
-        "Todos los campos deben estar llenos para crear el producto."
+      setError(
+        "Todos los campos deben estar llenos para actualizar el proveedor."
       );
-      setMessageType("danger");
+      setMessage("");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
       return;
     }
 
-    // ---------------------------------------
-    console.log("Submitting user:", {
-      userLastName,
-      userFirstName,
-      role,
-      status,
-    });
-    //--------------------------------------------
-
-    Axios.post("http://localhost:8080/api/v1/users/create", {
-      userLastName: userLastName,
-      userFirstName: userFirstName,
+    Axios.put(`http://localhost:8080/api/v1/users/update/${user.user_id}`, {
+      user_lastname: userLastName,
+      user_firstname: userFirstName,
       role: role,
       status: status,
     })
       .then((response) => {
-        setUsersList([
-          ...usersList,
-          {
-            user_lastname: userLastName,
-            user_firstname: userFirstName,
-            role: role,
-            status: status,
-          },
-        ]);
         setUserLastName("");
         setUserFirstName("");
         setRole("");
         setStatus("");
-        setConfirmationMessage("Usuario creado con éxito!");
-        setMessageType("primary");
+        setMessage("El usuario ha sido actualizado con éxito.");
+        setError("");
         setTimeout(() => {
-          setConfirmationMessage("");
+          setMessage("");
         }, 5000);
-        return;
       })
       .catch((error) => {
-        console.error("Error al crear el usuario!", error);
-        setConfirmationMessage("Error al crear el usuario");
-        setMessageType("danger");
+        setMessage("");
+        setError("Error en el proceso de actualización: " + error.message);
         setTimeout(() => {
-          setConfirmationMessage("");
+          setError("");
         }, 5000);
-        return;
       });
   };
 
   return (
     <>
-      <CreateHeader
-        text={labels.USER.CREATE_USER_PAGE}
+      <UpdateHeader
+        text={labels.USER.UPDATE_SUPPLIER_PAGE}
         pathSearch={"/user/search"}
       />
       <div className="row align-items-start container_principal">
@@ -98,14 +83,14 @@ const CreateUserPage = () => {
               type="text"
               name="userLastName"
               value={userLastName}
-              placeholder="Ingrese el apellido del usuario a crear"
+              placeholder="Ingrese el apellido del usuario a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
                 setUserLastName(e.target.value);
               }}
             />
           </div>
-          <div className="value_label_container mb-4">
+          <div className="value_label_container mb-4 ">
             <Typography
               level="p"
               text="NOMBRE"
@@ -116,7 +101,7 @@ const CreateUserPage = () => {
               type="text"
               name="userFirstName"
               value={userFirstName}
-              placeholder="Ingrese el nombre del usuario a crear"
+              placeholder="Ingrese el nombre del usuario a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
                 setUserFirstName(e.target.value);
@@ -134,17 +119,17 @@ const CreateUserPage = () => {
               type="text"
               name="role"
               value={role}
-              placeholder="Ingrese el rol del usuario a crear"
+              placeholder="Ingrese el rol del usuario a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
                 setRole(e.target.value);
               }}
             />
           </div>
-          <div className="value_label_container mb-4">
+          <div className="value_label_container">
             <Typography
               level="p"
-              text="ESTATDO"
+              text="ESTADO"
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -152,17 +137,26 @@ const CreateUserPage = () => {
               type="text"
               name="status"
               value={status}
-              placeholder="Ingrese el estado del usuario a crear"
+              placeholder="Ingrese el estado del usuario a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
                 setStatus(e.target.value);
               }}
             />
           </div>
-          {confirmationMessage && (
-            <div className={`mt-3 fs-3 text-${messageType}`}>
-              <Typography level="p" text={confirmationMessage} />
-            </div>
+          {message && (
+            <Typography
+              level="p"
+              text={message}
+              className="text-primary mt-5 fs-3"
+            />
+          )}
+          {error && (
+            <Typography
+              level="p"
+              text={error}
+              className="text-danger mt-5 fs-3"
+            />
           )}
           <Button
             variant="secondary"
@@ -178,4 +172,4 @@ const CreateUserPage = () => {
   );
 };
 
-export default CreateUserPage;
+export default UpdateUserPage;
