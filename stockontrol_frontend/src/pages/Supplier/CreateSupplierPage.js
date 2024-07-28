@@ -82,7 +82,7 @@ const CreateSupplierPage = () => {
         return;
       })
       .catch((error) => {
-        console.error("There was an error creating the supplier!", error);
+        console.error("Error al crear el proveedor!", error);
         setConfirmationMessage("Error al crear el proveedor");
         setMessageType("danger");
         setTimeout(() => {

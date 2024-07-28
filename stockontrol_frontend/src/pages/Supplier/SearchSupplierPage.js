@@ -38,6 +38,7 @@ const SearchSupplierPage = () => {
         "Por favor ingresar al menos 3 caracteres para iniciar la busqueda"
       );
       setNoResultsMessage("");
+
       return;
     }
 
@@ -165,7 +166,7 @@ const SearchSupplierPage = () => {
             <table className="table table-striped table_size">
               <thead>
                 <tr>
-                  <th className="col-2">Nombre</th>
+                  <th className="col-2">Nombre Proveedor</th>
                   <th className="col-1 table-icon">Ver</th>
                   <th className="col-1 table-icon">Editar</th>
                   <th className="col-1 table-icon">Eliminar</th>

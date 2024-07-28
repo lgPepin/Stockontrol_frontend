@@ -15,6 +15,7 @@ const labels = {
     SEARCH_CATEGORY_PAGE: "Buscar Categoría",
     DETAILS_CATEGORY_PAGE: "Detalle Categoría",
     CREATE_CATEGORY_PAGE: "Crear Categoría",
+    UPDATE_CATEGORY_PAGE: "Actualizar Categoría",
   },
   USER: {
     SEARCH_USER_PAGE: "Buscar Usuario",
