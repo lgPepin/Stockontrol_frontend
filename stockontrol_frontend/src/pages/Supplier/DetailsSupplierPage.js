@@ -14,6 +14,7 @@ const DetailsSupplierPage = () => {
   const goToUpdateSupplierPage = (supplier) => {
     navigate("/supplier/update", { state: { supplier } });
   };
+
   return (
     <>
       <DetailsHeader

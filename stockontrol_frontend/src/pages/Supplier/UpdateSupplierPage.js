@@ -40,7 +40,7 @@ const UpdateSupplierPage = () => {
     );
   };
 
-  const submitProduct = () => {
+  const submitSupplier = () => {
     if (!validInputs()) {
       setError(
         "Todos los campos deben estar llenos para actualizar el proveedor."
@@ -262,7 +262,7 @@ const UpdateSupplierPage = () => {
             variant="secondary"
             size="lg"
             className="text-black border-dark mt-5 offset-5 col-2"
-            onClick={submitProduct}
+            onClick={submitSupplier}
           >
             Guardar
           </Button>

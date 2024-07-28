@@ -1,60 +1,62 @@
 import React, { useState } from "react";
-import CreateHeader from "../../components/Headers/CreateHeader";
+import UpdateHeader from "../../components/Headers/UpdateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
 import Axios from "axios";
 import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
+import { useLocation } from "react-router-dom";
 
-const CreateCategoryPage = () => {
-  const [categoryName, setCategoryName] = useState("");
-  const [categoriesList, setCategoriesList] = useState([]);
-  const [confirmationMessage, setConfirmationMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
+const UpdateCategoryPage = () => {
+  const location = useLocation();
+  const category = location.state?.category || {};
+
+  const [categoryName, setCategoryName] = useState(
+    category.category_name || ""
+  );
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const submitCategory = () => {
     if (!categoryName) {
-      setConfirmationMessage(
-        "Todos los campos deben estar llenos para crear el producto."
+      setError(
+        "Todos los campos deben estar llenos para actualizar el proveedor."
       );
-      setMessageType("danger");
+      setMessage("");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
       return;
     }
 
-    Axios.post("http://localhost:8080/api/v1/categories/create", {
-      categoryName: categoryName,
-    })
+    Axios.put(
+      `http://localhost:8080/api/v1/categories/update/${category.category_id}`,
+      {
+        category_name: categoryName,
+      }
+    )
       .then((response) => {
-        setCategoriesList([
-          ...categoriesList,
-          {
-            category_name: categoryName,
-          },
-        ]);
         setCategoryName("");
-        setConfirmationMessage("Categoria creada con éxito!");
-        setMessageType("primary");
+        setMessage("La categoria ha sido actualizada con éxito.");
+        setError("");
         setTimeout(() => {
-          setConfirmationMessage("");
+          setMessage("");
         }, 5000);
-        return;
       })
       .catch((error) => {
-        console.error("Error al crear la categoria!", error);
-        setConfirmationMessage("Error al crear la categoria");
-        setMessageType("danger");
+        setMessage("");
+        setError("Error en el proceso de actualización: " + error.message);
         setTimeout(() => {
-          setConfirmationMessage("");
+          setError("");
         }, 5000);
-        return;
       });
   };
 
   return (
     <>
-      <CreateHeader
-        text={labels.CATEGORY.CREATE_CATEGORY_PAGE}
+      <UpdateHeader
+        text={labels.SUPPLIER.UPDATE_CATEGORY_PAGE}
         pathSearch={"/category/search"}
       />
       <div className="row align-items-start container_principal">
@@ -73,18 +75,26 @@ const CreateCategoryPage = () => {
               type="text"
               name="categoryName"
               value={categoryName}
-              placeholder="Ingrese el nombre de la categoria a crear"
+              placeholder="Ingrese el nombre de la categoria a actualizar"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
                 setCategoryName(e.target.value);
               }}
             />
           </div>
-
-          {confirmationMessage && (
-            <div className={`mt-3 fs-3 text-${messageType}`}>
-              <Typography level="p" text={confirmationMessage} />
-            </div>
+          {message && (
+            <Typography
+              level="p"
+              text={message}
+              className="text-primary mt-5 fs-3"
+            />
+          )}
+          {error && (
+            <Typography
+              level="p"
+              text={error}
+              className="text-danger mt-5 fs-3"
+            />
           )}
           <Button
             variant="secondary"
@@ -100,4 +110,4 @@ const CreateCategoryPage = () => {
   );
 };
 
-export default CreateCategoryPage;
+export default UpdateCategoryPage;

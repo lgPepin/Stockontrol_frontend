@@ -10,6 +10,7 @@ import UpdateSupplierPage from "./pages/Supplier/UpdateSupplierPage";
 import SearchCategoryPage from "./pages/Category/SearchCategoryPage";
 import DetailsCategoryPage from "./pages/Category/DetailsCategoryPage";
 import CreateCategoryPage from "./pages/Category/CreateCategoryPage";
+import UpdateCategoryPage from "./pages/Category/UpdateCategoryPage";
 import SearchUserPage from "./pages/User/SearchUserPage";
 import DetailsUserPage from "./pages/User/DetailsUserPage";
 import CreateUserPage from "./pages/User/CreateUserPage";
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: "/category/create",
     element: <CreateCategoryPage />,
+  },
+  {
+    path: "/category/update",
+    element: <UpdateCategoryPage />,
   },
   {
     path: "/user/search",
