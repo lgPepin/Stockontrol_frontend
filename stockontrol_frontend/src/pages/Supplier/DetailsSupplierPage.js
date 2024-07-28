@@ -6,7 +6,7 @@ import Typography from "../../common/Typography/Typography";
 import Input from "../../common/Input/Input";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const DetailsSupplierPage = () => {
+const DetailsUserPage = () => {
   const location = useLocation();
   const supplier = location.state?.supplier || {};
   const navigate = useNavigate();
@@ -18,9 +18,9 @@ const DetailsSupplierPage = () => {
   return (
     <>
       <DetailsHeader
-        text={labels.SUPPLIER.DETAILS_SUPPLIER_PAGE}
-        pathSearch={"/supplier/search"}
-        pathCreate={"/supplier/create"}
+        text={labels.USER.DETAILS_USER_PAGE}
+        pathSearch={"/user/search"}
+        pathCreate={"/user/create"}
         onClick={() => goToUpdateSupplierPage(supplier)}
       />
       <div className="row align-items-start container_principal">
@@ -153,5 +153,4 @@ const DetailsSupplierPage = () => {
     </>
   );
 };
-
-export default DetailsSupplierPage;
+export default DetailsUserPage;

@@ -14,7 +14,6 @@ import { Link, useNavigate } from "react-router-dom";
 const SearchCategoryPage = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryList, setCategoryList] = useState([]);
-  const [newCategory, setNewCategory] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const [noResultsMessage, setNoResultsMessage] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
@@ -87,21 +86,6 @@ const SearchCategoryPage = () => {
         }, 5000);
         return;
       });
-  };
-
-  const updateCategory = (category) => {
-    Axios.put("http://localhost:8080/api/v1/categoriesupdate", {
-      category_name: category,
-    });
-
-    setCategoryList((prevList) =>
-      prevList.map((categ) =>
-        categ.category_name === category
-          ? { ...categ, category: newCategory }
-          : categ
-      )
-    );
-    setNewCategory("");
   };
 
   return (

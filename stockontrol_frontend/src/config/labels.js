@@ -21,6 +21,7 @@ const labels = {
     SEARCH_USER_PAGE: "Buscar Usuario",
     DETAILS_USER_PAGE: "Detalle Usuario",
     CREATE_USER_PAGE: "Crear Usuario",
+    UPDATE_USER_PAGE: "Actualizar Usuario",
   },
 };
 

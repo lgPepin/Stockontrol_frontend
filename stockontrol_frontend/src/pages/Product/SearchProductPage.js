@@ -209,12 +209,12 @@ const SearchProductPage = () => {
                 <table className="table table-striped table_size">
                   <thead>
                     <tr>
-                      <th className="col-2">Nom</th>
+                      <th className="col-2">Nombre Producto</th>
                       <th className="col-1">Stock</th>
-                      <th className="col-1">Catégorie</th>
-                      <th className="col-1 table-icon">Voir</th>
-                      <th className="col-1 table-icon">Éditer</th>
-                      <th className="col-1 table-icon">Supprimer</th>
+                      <th className="col-1">Categoria</th>
+                      <th className="col-1 table-icon">Ver</th>
+                      <th className="col-1 table-icon">Editar</th>
+                      <th className="col-1 table-icon">Eliminar</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -229,7 +229,7 @@ const SearchProductPage = () => {
                           </Link>
                         </td>
                         <td>{val.stock}</td>
-                        <td>{val.category}</td>
+                        <td>{val.category_name}</td>
                         <td className="table-icon">
                           <FaEye
                             className="icon custom_icon"

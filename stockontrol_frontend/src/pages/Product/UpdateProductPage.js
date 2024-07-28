@@ -13,11 +13,9 @@ const UpdateProductPage = () => {
   const location = useLocation();
   const product = location.state?.product || {};
 
-  console.log("ID du produit dans UpdateProductPage :", product);
-
   const [productName, setProductName] = useState(product.product_name || "");
   const [supplierId, setSupplierId] = useState(product.product_id || "");
-  const [category, setCategory] = useState(product.category || "");
+  const [categoryId, setCategoryId] = useState(product.category_id || "");
   const [stock, setStock] = useState(product.stock || "");
   const [purchasePrice, setPurchasePrice] = useState(
     product.purchase_price || ""
@@ -25,6 +23,7 @@ const UpdateProductPage = () => {
   const [sellingPrice, setSellingPrice] = useState(product.selling_price || "");
   const [status, setStatus] = useState(product.status || "");
   const [suppliers, setSuppliers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -45,11 +44,28 @@ const UpdateProductPage = () => {
       });
   }, [product.supplier_name]);
 
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/categories")
+      .then((response) => {
+        setCategories(response.data);
+
+        const category = response.data.find(
+          (category) => category.category_name === product.category_name
+        );
+        if (category) {
+          setCategoryId(category.category_id);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al recuperar las categorias :", error);
+      });
+  }, [product.category_name]);
+
   const validInputs = () => {
     return (
       productName &&
       supplierId &&
-      category &&
+      categoryId &&
       stock &&
       purchasePrice &&
       sellingPrice &&
@@ -72,7 +88,7 @@ const UpdateProductPage = () => {
     Axios.put(`http://localhost:8080/api/v1/update/${product.product_id}`, {
       product_name: productName,
       supplier_id: supplierId,
-      category: category,
+      category_id: categoryId,
       stock: stock,
       purchase_price: purchasePrice,
       selling_price: sellingPrice,
@@ -81,7 +97,7 @@ const UpdateProductPage = () => {
       .then((response) => {
         setProductName("");
         setSupplierId("");
-        setCategory("");
+        setCategoryId("");
         setStock("");
         setPurchasePrice("");
         setSellingPrice("");
@@ -160,16 +176,31 @@ const UpdateProductPage = () => {
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="category"
+              value={categoryId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                categoryId ? "not-default" : ""
+              }`}
+              onChange={(e) => {
+                setCategoryId(e.target.value);
+              }}
+              options={categories.map((category) => ({
+                value: category.category_id,
+                label: category.category_name,
+              }))}
+              placeholder="Seleccione una categoria"
+            />
+            {/* <Input
               type="text"
               name="category"
-              value={category}
+              value={categoryId}
               placeholder="Ingrese el nombre de la categoría"
               className="col-8 fs-2 ms-3 value"
               onChange={(e) => {
                 setCategory(e.target.value);
               }}
-            />
+            /> */}
           </div>
           <div className="value_label_container mb-4">
             <Typography
