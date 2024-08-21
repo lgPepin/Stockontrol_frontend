@@ -1,5 +1,5 @@
 import React from "react";
-import { FaHome, FaBox, FaUser } from "react-icons/fa";
+import { FaHome, FaBox, FaUser, FaListUl } from "react-icons/fa";
 import {
   RiArrowDownSFill,
   RiArrowUpSFill,
@@ -7,6 +7,7 @@ import {
 } from "react-icons/ri";
 import { BsPlusCircle, BsFillPencilFill, BsSearch } from "react-icons/bs";
 import { TbTruckDelivery, TbCategoryFilled } from "react-icons/tb";
+import { CgPlayButtonO } from "react-icons/cg";
 
 export const SideBarData = [
   {
@@ -122,6 +123,40 @@ export const SideBarData = [
         title: "Eliminar",
         icon: <RiDeleteBin6Fill size={"1.3em"} />,
         link: "/user/search",
+      },
+    ],
+  },
+  {
+    title: "Listas de control de stock",
+    icon: <FaListUl size={"1.4em"} />,
+    link: "/listaControlStock/search",
+    iconClosed: <RiArrowDownSFill />,
+    iconOpened: <RiArrowUpSFill />,
+    subNav: [
+      {
+        title: "Crear",
+        icon: <BsPlusCircle size={"1.3em"} />,
+        link: "/listaControlStock/create",
+      },
+      {
+        title: "Buscar",
+        icon: <BsSearch size={"1.3em"} />,
+        link: "/listaControlStock/search",
+      },
+      {
+        title: "Actualizar",
+        icon: <BsFillPencilFill size={"1.3em"} />,
+        link: "/listaControlStock/search",
+      },
+      {
+        title: "Eliminar",
+        icon: <RiDeleteBin6Fill size={"1.3em"} />,
+        link: "/listaControlStock/search",
+      },
+      {
+        title: "Activar",
+        icon: <CgPlayButtonO size={"1.3em"} />,
+        link: "/listaControlStock/search",
       },
     ],
   },

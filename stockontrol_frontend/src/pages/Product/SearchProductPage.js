@@ -59,7 +59,7 @@ const SearchProductPage = () => {
     })
       .then((response) => {
         if (response.data.length === 0) {
-          setNoResultsMessage("No producto encontrado");
+          setNoResultsMessage("Producto no encontrado");
         } else {
           setNoResultsMessage("");
         }
@@ -71,17 +71,45 @@ const SearchProductPage = () => {
       });
   };
 
-  const deleteProduct = (productName) => {
-    Axios.delete(`http://localhost:8080/api/v1/delete/${productName}`)
+  // const deleteProduct = (productName) => {
+  //   Axios.delete(`http://localhost:8080/api/v1/delete/${productName}`)
+  //     .then((response) => {
+  //       setSuccessDeleteMessage(response.data.message);
+  //       setProductsList((prevList) =>
+  //         prevList.filter((product) => product.product_name !== productName)
+  //       );
+  //       setTimeout(() => {
+  //         setSuccessDeleteMessage("");
+  //       }, 5000);
+  //       return;
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error al eliminar el producto :", error);
+  //       setErrorDeleteMessage(
+  //         error.response?.data?.message || "Error a la supresión del producto"
+  //       );
+  //       setTimeout(() => {
+  //         setErrorDeleteMessage("");
+  //       }, 5000);
+  //       return;
+  //     });
+  // };
+
+  const deleteProduct = (productId, productName) => {
+    if (isNaN(productId)) {
+      console.error("Product ID must be an integer");
+      return;
+    }
+
+    Axios.delete(`http://localhost:8080/api/v1/delete/${productId}`)
       .then((response) => {
         setSuccessDeleteMessage(response.data.message);
         setProductsList((prevList) =>
-          prevList.filter((product) => product.product_name !== productName)
+          prevList.filter((product) => product.product_id !== productId)
         );
         setTimeout(() => {
           setSuccessDeleteMessage("");
         }, 5000);
-        return;
       })
       .catch((error) => {
         console.error("Error al eliminar el producto :", error);
@@ -91,7 +119,6 @@ const SearchProductPage = () => {
         setTimeout(() => {
           setErrorDeleteMessage("");
         }, 5000);
-        return;
       });
   };
 
@@ -104,11 +131,20 @@ const SearchProductPage = () => {
     return acc;
   }, {});
 
+  const deleteResultsList = () => {
+    setProductsList([]);
+    setProductName("");
+    setSupplier("");
+    setCategory("");
+    setNoResultsMessage("");
+  };
+
   return (
     <>
       <SearchHeader
-        text={labels.PRODUCT.SEARCH_PRODUCT_PAGE}
+        text={labels.PAGES.PRODUCT.SEARCH_PRODUCT_PAGE}
         pathCreate={"/product/create"}
+        createButtonName={labels.BUTTONS.CREATE_PRODUCT_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -125,6 +161,7 @@ const SearchProductPage = () => {
             <Input
               type="text"
               name="productName"
+              value={productName}
               placeholder="Ingrese el nombre del producto a buscar"
               className="col-9 fs-2 ms-3 value"
               onChange={(e) => {
@@ -141,7 +178,8 @@ const SearchProductPage = () => {
 
             <Input
               type="text"
-              name="productName"
+              name="supplierName"
+              value={supplier}
               placeholder="Ingrese el nombre del proveedor a buscar"
               className="col-9 fs-2 ms-3 value"
               onChange={(e) => {
@@ -158,7 +196,8 @@ const SearchProductPage = () => {
 
             <Input
               type="text"
-              name="productName"
+              name="categoryName"
+              value={category}
               placeholder="Ingrese el nombre de la categoría a buscar"
               className="col-9 fs-2 ms-3 value"
               onChange={(e) => {
@@ -169,7 +208,15 @@ const SearchProductPage = () => {
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-4 col-2"
+            className="text-black border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            Borrar Lista
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-black border-dark mt-5 offset-2 col-2"
             onClick={searchProduct}
           >
             Buscar
@@ -235,6 +282,7 @@ const SearchProductPage = () => {
                             className="icon custom_icon"
                             size={"1.3em"}
                             onClick={() => goToDetailsProductPage(val)}
+                            data-testid="view-icon"
                           />
                         </td>
                         <td className="table-icon">
@@ -251,7 +299,8 @@ const SearchProductPage = () => {
                           <RiDeleteBin6Fill
                             className="icon custom_icon"
                             size={"1.3em"}
-                            onClick={() => deleteProduct(val.product_name)}
+                            onClick={() => deleteProduct(val.product_id)}
+                            data-testid="delete-icon"
                           />
                         </td>
                       </tr>

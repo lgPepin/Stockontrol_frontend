@@ -4,7 +4,7 @@ import { BsPlusCircle } from "react-icons/bs";
 import Typography from "../../common/Typography/Typography";
 import { Link } from "react-router-dom";
 
-const SearchHeader = ({ text, pathCreate }) => {
+const SearchHeader = ({ text, pathCreate, createButtonName }) => {
   return (
     <div className="p-4 bg-warning">
       <div className="row">
@@ -18,7 +18,7 @@ const SearchHeader = ({ text, pathCreate }) => {
               size="lg"
               className="text-black border-dark"
             >
-              Crear Producto
+              {createButtonName}
               <BsPlusCircle className="ms-2 text-black " size={"1.4em"} />
             </Button>
           </Link>

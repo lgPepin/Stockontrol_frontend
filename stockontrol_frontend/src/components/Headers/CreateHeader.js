@@ -4,7 +4,7 @@ import { BsArrowLeftCircle } from "react-icons/bs";
 import Typography from "../../common/Typography/Typography";
 import { Link } from "react-router-dom";
 
-const CreateHeader = ({ text, pathSearch }) => {
+const CreateHeader = ({ text, pathSearch, backButtonName }) => {
   return (
     <div className="p-4 bg-warning">
       <div className="row">
@@ -16,7 +16,7 @@ const CreateHeader = ({ text, pathSearch }) => {
               className="text-black border-dark"
             >
               <BsArrowLeftCircle className="me-2" size={"1.4em"} />
-              Regresar
+              {backButtonName}
             </Button>
           </Link>
         </div>

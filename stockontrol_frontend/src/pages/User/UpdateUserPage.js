@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UpdateHeader from "../../components/Headers/UpdateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
@@ -7,6 +7,7 @@ import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
 import { useLocation } from "react-router-dom";
+import CustomSelect from "../../common/Select/CustomSelect";
 
 const UpdateUserPage = () => {
   const location = useLocation();
@@ -15,12 +16,49 @@ const UpdateUserPage = () => {
   const [userLastName, setUserLastName] = useState(user.user_lastname || "");
   const [userFirstName, setUserFirstName] = useState(user.user_firstname || "");
   const [role, setRole] = useState(user.role || "");
-  const [status, setStatus] = useState(user.status || "");
+  const [statusId, setStatusId] = useState(user.statusId || "");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [statuses, setStatuses] = useState([]);
+  const [errors, setErrors] = useState({
+    userLastName: false,
+    userFirstName: false,
+    role: false,
+    statusId: false,
+  });
+
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/statuses")
+      .then((response) => {
+        setStatuses(response.data);
+
+        const status = response.data.find(
+          (status) => status.status === user.status
+        );
+        if (status) {
+          setStatusId(status.status_id);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al recuperar los estados :", error);
+      });
+  }, [user.status]);
+
+  // const validInputs = () => {
+  //   return userLastName && userFirstName && role && statusId;
+  // };
 
   const validInputs = () => {
-    return userLastName && userFirstName && role && status;
+    const errorsObject = {
+      userLastName: !userLastName,
+      userFirstName: !userFirstName,
+      role: !role,
+      statusId: !statusId,
+    };
+
+    setErrors(errorsObject);
+
+    return !Object.values(errorsObject).some((value) => value);
   };
 
   const submitUser = () => {
@@ -39,15 +77,16 @@ const UpdateUserPage = () => {
       user_lastname: userLastName,
       user_firstname: userFirstName,
       role: role,
-      status: status,
+      status_id: statusId,
     })
       .then((response) => {
         setUserLastName("");
         setUserFirstName("");
         setRole("");
-        setStatus("");
+        setStatusId("");
         setMessage("El usuario ha sido actualizado con éxito.");
         setError("");
+        setErrors({});
         setTimeout(() => {
           setMessage("");
         }, 5000);
@@ -64,8 +103,9 @@ const UpdateUserPage = () => {
   return (
     <>
       <UpdateHeader
-        text={labels.USER.UPDATE_SUPPLIER_PAGE}
+        text={labels.PAGES.USER.UPDATE_USER_PAGE}
         pathSearch={"/user/search"}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -75,7 +115,7 @@ const UpdateUserPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="APELLIDO"
+              text={labels.USERS.USER_LASTNAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -84,7 +124,9 @@ const UpdateUserPage = () => {
               name="userLastName"
               value={userLastName}
               placeholder="Ingrese el apellido del usuario a actualizar"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.userLastName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setUserLastName(e.target.value);
               }}
@@ -93,7 +135,7 @@ const UpdateUserPage = () => {
           <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="NOMBRE"
+              text={labels.USERS.USER_FIRSTNAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -102,16 +144,19 @@ const UpdateUserPage = () => {
               name="userFirstName"
               value={userFirstName}
               placeholder="Ingrese el nombre del usuario a actualizar"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.userFirstName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setUserFirstName(e.target.value);
+                setErrors({ ...errors, userFirstName: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="ROL"
+              text={labels.USERS.ROLE()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -120,20 +165,40 @@ const UpdateUserPage = () => {
               name="role"
               value={role}
               placeholder="Ingrese el rol del usuario a actualizar"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.role ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setRole(e.target.value);
+                setErrors({ ...errors, role: false });
               }}
             />
           </div>
           <div className="value_label_container">
             <Typography
               level="p"
-              text="ESTADO"
+              text={labels.USERS.STATUS()}
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="status"
+              value={statusId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                statusId ? "not-default" : ""
+              } ${errors.statusId ? "error-border" : ""}`}
+              onChange={(e) => {
+                setStatusId(e.target.value);
+                setErrors({ ...errors, statusId: false });
+              }}
+              options={statuses.map((status) => ({
+                value: status.status_id,
+                label: status.status,
+              }))}
+              placeholder="Seleccione un estado"
+            />
+
+            {/* <Input
               type="text"
               name="status"
               value={status}
@@ -142,7 +207,7 @@ const UpdateUserPage = () => {
               onChange={(e) => {
                 setStatus(e.target.value);
               }}
-            />
+            /> */}
           </div>
           {message && (
             <Typography

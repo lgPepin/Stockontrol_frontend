@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CreateHeader from "../../components/Headers/CreateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
@@ -6,6 +6,7 @@ import Axios from "axios";
 import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
+import CustomSelect from "../../common/Select/CustomSelect";
 
 const CreateSupplierPage = () => {
   const [supplierName, setSupplierName] = useState("");
@@ -15,22 +16,56 @@ const CreateSupplierPage = () => {
   const [contactName, setContactName] = useState("");
   const [orderDay, setOrderDay] = useState("");
   const [deliveryDay, setDeliveryDay] = useState("");
-  const [status, setStatus] = useState("");
+  const [statusId, setStatusId] = useState("");
   const [suppliersList, setSuppliersList] = useState([]);
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  const [statuses, setStatuses] = useState([]);
+  const [errors, setErrors] = useState({
+    supplierName: false,
+    identificationNumber: false,
+    address: false,
+    phone: false,
+    contactName: false,
+    orderDay: false,
+    deliveryDay: false,
+    statusId: false,
+  });
+
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/statuses").then((response) => {
+      setStatuses(response.data);
+    });
+  }, []);
+
+  // const validInputs = () => {
+  //   return (
+  //     supplierName &&
+  //     identificationNumber &&
+  //     address &&
+  //     phone &&
+  //     contactName &&
+  //     orderDay &&
+  //     deliveryDay &&
+  //     statusId
+  //   );
+  // };
 
   const validInputs = () => {
-    return (
-      supplierName &&
-      identificationNumber &&
-      address &&
-      phone &&
-      contactName &&
-      orderDay &&
-      deliveryDay &&
-      status
-    );
+    const errorsObject = {
+      supplierName: !supplierName,
+      identificationNumber: !identificationNumber,
+      address: !address,
+      phone: !phone,
+      contactName: !contactName,
+      orderDay: !orderDay,
+      deliveryDay: !deliveryDay,
+      statusId: !statusId,
+    };
+
+    setErrors(errorsObject);
+
+    return !Object.values(errorsObject).some((value) => value);
   };
 
   const submitSupplier = () => {
@@ -50,7 +85,7 @@ const CreateSupplierPage = () => {
       contactName: contactName,
       orderDay: orderDay,
       deliveryDay: deliveryDay,
-      status: status,
+      statusId: statusId,
     })
       .then((response) => {
         setSuppliersList([
@@ -63,7 +98,7 @@ const CreateSupplierPage = () => {
             contactName: contactName,
             orderDay: orderDay,
             deliveryDay: deliveryDay,
-            status: status,
+            statusId: statusId,
           },
         ]);
         setSupplierName("");
@@ -73,7 +108,8 @@ const CreateSupplierPage = () => {
         setContactName("");
         setOrderDay("");
         setDeliveryDay("");
-        setStatus("");
+        setStatusId("");
+        setErrors({});
         setConfirmationMessage("Proveedor creado con éxito!");
         setMessageType("primary");
         setTimeout(() => {
@@ -95,8 +131,9 @@ const CreateSupplierPage = () => {
   return (
     <>
       <CreateHeader
-        text={labels.SUPPLIER.CREATE_SUPPLIER_PAGE}
+        text={labels.PAGES.SUPPLIER.CREATE_SUPPLIER_PAGE}
         pathSearch={"/supplier/search"}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -106,7 +143,7 @@ const CreateSupplierPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="NOMBRE"
+              text={labels.SUPPLIERS.SUPPLIER_NAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -115,16 +152,19 @@ const CreateSupplierPage = () => {
               name="supplierName"
               value={supplierName}
               placeholder="Ingrese el nombre del proveedor a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.supplierName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setSupplierName(e.target.value);
+                setErrors({ ...errors, supplierName: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="IDENTIFICACION"
+              text={labels.SUPPLIERS.IDENTIFICATION_NUMBER()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -133,16 +173,19 @@ const CreateSupplierPage = () => {
               name="identificacionNumber"
               value={identificationNumber}
               placeholder="Ingrese el numero de identificación del proveedor"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.identificationNumber ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setIdentificationNumber(e.target.value);
+                setErrors({ ...errors, identificationNumber: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="DIRECCION"
+              text={labels.SUPPLIERS.ADDRESS()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -151,16 +194,19 @@ const CreateSupplierPage = () => {
               name="address"
               value={address}
               placeholder="Ingrese la dirección del proveedor a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.address ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setAddress(e.target.value);
+                setErrors({ ...errors, address: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="TELEFONO"
+              text={labels.SUPPLIERS.PHONE()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -169,16 +215,19 @@ const CreateSupplierPage = () => {
               name="phone"
               value={phone}
               placeholder="Ingrese el teléfono del proveedor a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.phone ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setPhone(e.target.value);
+                setErrors({ ...errors, phone: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="NOMBRE CONTACTO"
+              text={labels.SUPPLIERS.CONTACT_NAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -187,16 +236,19 @@ const CreateSupplierPage = () => {
               name="contactName"
               value={contactName}
               placeholder="Ingrese el nombre del contacto del proveedor"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.contactName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setContactName(e.target.value);
+                setErrors({ ...errors, contactName: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="DIA DE PEDIDO"
+              text={labels.SUPPLIERS.ORDER_DAY()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -205,16 +257,19 @@ const CreateSupplierPage = () => {
               name="orderDay"
               value={orderDay}
               placeholder="Ingrese el dia de pedido del proveedor a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.orderDay ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setOrderDay(e.target.value);
+                setErrors({ ...errors, orderDay: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="DIA DE ENTREGA"
+              text={labels.SUPPLIERS.DELIVERY_DAY()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -223,20 +278,40 @@ const CreateSupplierPage = () => {
               name="deliveryDay"
               value={deliveryDay}
               placeholder="Ingrese el dia de entrega del proveedor a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.deliveryDay ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setDeliveryDay(e.target.value);
+                setErrors({ ...errors, deliveryDay: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="ESTATDO"
+              text={labels.SUPPLIERS.STATUS()}
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="status"
+              value={statusId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                statusId ? "not-default" : ""
+              } ${errors.statusId ? "error-border" : ""}`}
+              onChange={(e) => {
+                setStatusId(e.target.value);
+                setErrors({ ...errors, statusId: false });
+              }}
+              options={statuses.map((status) => ({
+                value: status.status_id,
+                label: status.status,
+              }))}
+              placeholder="Ingrese el estado del proveedor a crear"
+            />
+
+            {/* <Input
               type="text"
               name="status"
               value={status}
@@ -245,7 +320,7 @@ const CreateSupplierPage = () => {
               onChange={(e) => {
                 setStatus(e.target.value);
               }}
-            />
+            /> */}
           </div>
           {confirmationMessage && (
             <div className={`mt-3 fs-3 text-${messageType}`}>

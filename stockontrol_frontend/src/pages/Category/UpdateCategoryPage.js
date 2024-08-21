@@ -11,15 +11,27 @@ import { useLocation } from "react-router-dom";
 const UpdateCategoryPage = () => {
   const location = useLocation();
   const category = location.state?.category || {};
-
   const [categoryName, setCategoryName] = useState(
     category.category_name || ""
   );
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [errors, setErrors] = useState({
+    categoryName: false,
+  });
+
+  const validInputs = () => {
+    const errorsObject = {
+      categoryName: !categoryName,
+    };
+
+    setErrors(errorsObject);
+
+    return !Object.values(errorsObject).some((value) => value);
+  };
 
   const submitCategory = () => {
-    if (!categoryName) {
+    if (!validInputs()) {
       setError(
         "Todos los campos deben estar llenos para actualizar el proveedor."
       );
@@ -40,6 +52,7 @@ const UpdateCategoryPage = () => {
         setCategoryName("");
         setMessage("La categoria ha sido actualizada con éxito.");
         setError("");
+        setErrors({});
         setTimeout(() => {
           setMessage("");
         }, 5000);
@@ -56,8 +69,9 @@ const UpdateCategoryPage = () => {
   return (
     <>
       <UpdateHeader
-        text={labels.SUPPLIER.UPDATE_CATEGORY_PAGE}
+        text={labels.PAGES.SUPPLIER.UPDATE_CATEGORY_PAGE}
         pathSearch={"/category/search"}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -67,7 +81,7 @@ const UpdateCategoryPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="NOMBRE"
+              text={labels.CATEGORIES.CATEGORY_NAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -76,9 +90,12 @@ const UpdateCategoryPage = () => {
               name="categoryName"
               value={categoryName}
               placeholder="Ingrese el nombre de la categoria a actualizar"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.categoryName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setCategoryName(e.target.value);
+                setErrors({ ...errors, categoryName: false });
               }}
             />
           </div>
