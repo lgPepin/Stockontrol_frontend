@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CreateHeader from "../../components/Headers/CreateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
@@ -6,18 +6,45 @@ import Axios from "axios";
 import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
+import CustomSelect from "../../common/Select/CustomSelect";
 
 const CreateUserPage = () => {
   const [userLastName, setUserLastName] = useState("");
   const [userFirstName, setUserFirstName] = useState("");
   const [role, setRole] = useState("");
-  const [status, setStatus] = useState("");
+  const [statusId, setStatusId] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  const [statuses, setStatuses] = useState([]);
+  const [errors, setErrors] = useState({
+    userLastName: false,
+    userFirstName: false,
+    role: false,
+    statusId: false,
+  });
+
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/statuses").then((response) => {
+      setStatuses(response.data);
+    });
+  }, []);
+
+  // const validInputs = () => {
+  //   return userLastName && userFirstName && role && statusId;
+  // };
 
   const validInputs = () => {
-    return userLastName && userFirstName && role && status;
+    const errorsObject = {
+      userLastName: !userLastName,
+      userFirstName: !userFirstName,
+      role: !role,
+      statusId: !statusId,
+    };
+
+    setErrors(errorsObject);
+
+    return !Object.values(errorsObject).some((value) => value);
   };
 
   const submitUser = () => {
@@ -34,7 +61,7 @@ const CreateUserPage = () => {
       userLastName,
       userFirstName,
       role,
-      status,
+      statusId,
     });
     //--------------------------------------------
 
@@ -42,7 +69,7 @@ const CreateUserPage = () => {
       userLastName: userLastName,
       userFirstName: userFirstName,
       role: role,
-      status: status,
+      statusId: statusId,
     })
       .then((response) => {
         setUsersList([
@@ -51,13 +78,14 @@ const CreateUserPage = () => {
             user_lastname: userLastName,
             user_firstname: userFirstName,
             role: role,
-            status: status,
+            statusId: statusId,
           },
         ]);
         setUserLastName("");
         setUserFirstName("");
         setRole("");
-        setStatus("");
+        setStatusId("");
+        setErrors({});
         setConfirmationMessage("Usuario creado con éxito!");
         setMessageType("primary");
         setTimeout(() => {
@@ -79,8 +107,9 @@ const CreateUserPage = () => {
   return (
     <>
       <CreateHeader
-        text={labels.USER.CREATE_USER_PAGE}
+        text={labels.PAGES.USER.CREATE_USER_PAGE}
         pathSearch={"/user/search"}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -90,7 +119,7 @@ const CreateUserPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="APELLIDO"
+              text={labels.USERS.USER_LASTNAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -99,7 +128,9 @@ const CreateUserPage = () => {
               name="userLastName"
               value={userLastName}
               placeholder="Ingrese el apellido del usuario a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.userLastName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setUserLastName(e.target.value);
               }}
@@ -108,7 +139,7 @@ const CreateUserPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="NOMBRE"
+              text={labels.USERS.USER_FIRSTNAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -117,16 +148,19 @@ const CreateUserPage = () => {
               name="userFirstName"
               value={userFirstName}
               placeholder="Ingrese el nombre del usuario a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.userFirstName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setUserFirstName(e.target.value);
+                setErrors({ ...errors, userFirstName: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="ROL"
+              text={labels.USERS.ROLE()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -135,20 +169,40 @@ const CreateUserPage = () => {
               name="role"
               value={role}
               placeholder="Ingrese el rol del usuario a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.role ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setRole(e.target.value);
+                setErrors({ ...errors, role: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="ESTATDO"
+              text={labels.USERS.STATUS()}
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="status"
+              value={statusId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                statusId ? "not-default" : ""
+              } ${errors.statusId ? "error-border" : ""}`}
+              onChange={(e) => {
+                setStatusId(e.target.value);
+                setErrors({ ...errors, statusId: false });
+              }}
+              options={statuses.map((status) => ({
+                value: status.status_id,
+                label: status.status,
+              }))}
+              placeholder="Seleccione un estado"
+            />
+
+            {/* <Input
               type="text"
               name="status"
               value={status}
@@ -157,7 +211,7 @@ const CreateUserPage = () => {
               onChange={(e) => {
                 setStatus(e.target.value);
               }}
-            />
+            /> */}
           </div>
           {confirmationMessage && (
             <div className={`mt-3 fs-3 text-${messageType}`}>

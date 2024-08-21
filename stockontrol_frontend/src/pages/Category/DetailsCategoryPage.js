@@ -18,10 +18,13 @@ const DetailsCategoryPage = () => {
   return (
     <>
       <DetailsHeader
-        text={labels.CATEGORY.DETAILS_CATEGORY_PAGE}
+        text={labels.PAGES.CATEGORY.DETAILS_CATEGORY_PAGE}
         pathSearch={"/category/search"}
         pathCreate={"/category/create"}
         onClick={() => goToUpdateCategoryPage(category)}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
+        editButtonName={labels.BUTTONS.EDIT_CATEGORY_BUTTON}
+        createButtonName={labels.BUTTONS.CREATE_CATEGORY_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">

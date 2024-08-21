@@ -51,3 +51,7 @@
 .custom_select.not-default {
   color: black;
 }
+
+.error-border {
+  border: 2px solid red;
+}

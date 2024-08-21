@@ -88,11 +88,18 @@ const SearchCategoryPage = () => {
       });
   };
 
+  const deleteResultsList = () => {
+    setCategoryList([]);
+    setCategoryName("");
+    setNoResultsMessage("");
+  };
+
   return (
     <>
       <SearchHeader
-        text={labels.CATEGORY.SEARCH_CATEGORY_PAGE}
+        text={labels.PAGES.CATEGORY.SEARCH_CATEGORY_PAGE}
         pathCreate={"/category/create"}
+        createButtonName={labels.BUTTONS.CREATE_CATEGORY_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -109,6 +116,7 @@ const SearchCategoryPage = () => {
             <Input
               type="text"
               name="categoryName"
+              value={categoryName}
               placeholder="Ingrese el nombre de la categoria a buscar"
               className="col-9 fs-2 ms-3 value"
               onChange={(e) => {
@@ -119,7 +127,15 @@ const SearchCategoryPage = () => {
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-4 col-2"
+            className="text-black border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            Borrar Lista
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-black border-dark mt-5 offset-2 col-2"
             onClick={searchCategory}
           >
             Buscar

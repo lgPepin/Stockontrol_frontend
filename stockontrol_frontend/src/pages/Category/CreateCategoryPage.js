@@ -12,9 +12,22 @@ const CreateCategoryPage = () => {
   const [categoriesList, setCategoriesList] = useState([]);
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  const [errors, setErrors] = useState({
+    categoryName: false,
+  });
+
+  const validInputs = () => {
+    const errorsObject = {
+      categoryName: !categoryName,
+    };
+
+    setErrors(errorsObject);
+
+    return !Object.values(errorsObject).some((value) => value);
+  };
 
   const submitCategory = () => {
-    if (!categoryName) {
+    if (!validInputs()) {
       setConfirmationMessage(
         "Todos los campos deben estar llenos para crear el producto."
       );
@@ -33,6 +46,7 @@ const CreateCategoryPage = () => {
           },
         ]);
         setCategoryName("");
+        setErrors({});
         setConfirmationMessage("Categoria creada con éxito!");
         setMessageType("primary");
         setTimeout(() => {
@@ -54,8 +68,9 @@ const CreateCategoryPage = () => {
   return (
     <>
       <CreateHeader
-        text={labels.CATEGORY.CREATE_CATEGORY_PAGE}
+        text={labels.PAGES.CATEGORY.CREATE_CATEGORY_PAGE}
         pathSearch={"/category/search"}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -65,7 +80,7 @@ const CreateCategoryPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="NOMBRE"
+              text={labels.CATEGORIES.CATEGORY_NAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -74,9 +89,12 @@ const CreateCategoryPage = () => {
               name="categoryName"
               value={categoryName}
               placeholder="Ingrese el nombre de la categoria a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.categoryName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setCategoryName(e.target.value);
+                setErrors({ ...errors, categoryName: false });
               }}
             />
           </div>

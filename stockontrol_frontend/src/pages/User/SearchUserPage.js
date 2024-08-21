@@ -87,11 +87,18 @@ const SearchUserPage = () => {
       });
   };
 
+  const deleteResultsList = () => {
+    setUserList([]);
+    setUserLastName("");
+    setNoResultsMessage("");
+  };
+
   return (
     <>
       <SearchHeader
-        text={labels.USER.SEARCH_USER_PAGE}
+        text={labels.PAGES.USER.SEARCH_USER_PAGE}
         pathCreate={"/user/create"}
+        createButtonName={labels.BUTTONS.CREATE_USER_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -107,7 +114,8 @@ const SearchUserPage = () => {
 
             <Input
               type="text"
-              name="userName"
+              name="userLastName"
+              value={userLastName}
               placeholder="Ingrese el nombre del usuario a buscar"
               className="col-9 fs-2 ms-3 value"
               onChange={(e) => {
@@ -118,7 +126,15 @@ const SearchUserPage = () => {
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-4 col-2"
+            className="text-black border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            Borrar Lista
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-black border-dark mt-5 offset-2 col-2"
             onClick={searchUser}
           >
             Buscar

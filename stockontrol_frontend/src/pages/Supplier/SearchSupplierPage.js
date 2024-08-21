@@ -29,6 +29,12 @@ const SearchSupplierPage = () => {
     navigate("/supplier/update", { state: { supplier } });
   };
 
+  const deleteResultsList = () => {
+    setSupplierList([]);
+    setSupplierName("");
+    setNoResultsMessage("");
+  };
+
   const searchSupplier = () => {
     setConfirmationMessage("");
     setMessageType("");
@@ -92,8 +98,9 @@ const SearchSupplierPage = () => {
   return (
     <>
       <SearchHeader
-        text={labels.SUPPLIER.SEARCH_SUPPLIER_PAGE}
+        text={labels.PAGES.SUPPLIER.SEARCH_SUPPLIER_PAGE}
         pathCreate={"/supplier/create"}
+        createButtonName={labels.BUTTONS.CREATE_SUPPLIER_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -110,6 +117,7 @@ const SearchSupplierPage = () => {
             <Input
               type="text"
               name="supplierName"
+              value={supplierName}
               placeholder="Ingrese el nombre del proveedor a buscar"
               className="col-9 fs-2 ms-3 value"
               onChange={(e) => {
@@ -120,7 +128,15 @@ const SearchSupplierPage = () => {
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-4 col-2"
+            className="text-black border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            Borrar Lista
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-black border-dark mt-5 offset-2 col-2"
             onClick={searchSupplier}
           >
             Buscar

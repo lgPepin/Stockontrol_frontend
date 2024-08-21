@@ -15,12 +15,22 @@ const CreateProductPage = () => {
   const [stock, setStock] = useState("");
   const [purchasePrice, setPurchasePrice] = useState("");
   const [sellingPrice, setSellingPrice] = useState("");
-  const [status, setStatus] = useState("");
+  const [statusId, setStatusId] = useState("");
   const [productsList, setProductsList] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [errors, setErrors] = useState({
+    productName: false,
+    supplierId: false,
+    categoryId: false,
+    stock: false,
+    purchasePrice: false,
+    sellingPrice: false,
+    statusId: false,
+  });
 
   useEffect(() => {
     Axios.get("http://localhost:8080/api/v1/list/suppliers").then(
@@ -38,16 +48,38 @@ const CreateProductPage = () => {
     );
   }, []);
 
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/statuses").then((response) => {
+      setStatuses(response.data);
+    });
+  }, []);
+
+  // const validInputs = () => {
+  //   return (
+  //     productName &&
+  //     supplierId &&
+  //     categoryId &&
+  //     stock &&
+  //     purchasePrice &&
+  //     sellingPrice &&
+  //     statusId
+  //   );
+  // };
+
   const validInputs = () => {
-    return (
-      productName &&
-      supplierId &&
-      categoryId &&
-      stock &&
-      purchasePrice &&
-      sellingPrice &&
-      status
-    );
+    const errorsObject = {
+      productName: !productName,
+      supplierId: !supplierId,
+      categoryId: !categoryId,
+      stock: !stock,
+      purchasePrice: !purchasePrice,
+      sellingPrice: !sellingPrice,
+      statusId: !statusId,
+    };
+
+    setErrors(errorsObject);
+
+    return !Object.values(errorsObject).some((value) => value);
   };
 
   const submitProduct = () => {
@@ -67,7 +99,7 @@ const CreateProductPage = () => {
       stock: stock,
       purchasePrice: purchasePrice,
       sellingPrice: sellingPrice,
-      status: status,
+      statusId: statusId,
     })
       .then(() => {
         setProductsList([
@@ -79,7 +111,7 @@ const CreateProductPage = () => {
             stock: stock,
             purchasePrice: purchasePrice,
             sellingPrice: sellingPrice,
-            status: status,
+            statusId: statusId,
           },
         ]);
 
@@ -89,9 +121,10 @@ const CreateProductPage = () => {
         setStock("");
         setPurchasePrice("");
         setSellingPrice("");
-        setStatus("");
+        setStatusId("");
         setMessage("El producto ha sido guardado con éxito.");
         setError("");
+        setErrors({});
         setTimeout(() => {
           setMessage("");
         }, 5000);
@@ -108,8 +141,9 @@ const CreateProductPage = () => {
   return (
     <>
       <CreateHeader
-        text={labels.PRODUCT.CREATE_PRODUCT_PAGE}
+        text={labels.PAGES.PRODUCT.CREATE_PRODUCT_PAGE}
         pathSearch={"/"}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -119,7 +153,7 @@ const CreateProductPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="NOMBRE"
+              text={labels.PRODUCTS.PRODUCT_NAME()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -128,16 +162,19 @@ const CreateProductPage = () => {
               name="productName"
               value={productName}
               placeholder="Ingrese el nombre del producto a crear"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.productName ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setProductName(e.target.value);
+                setErrors({ ...errors, productName: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="PROVEEDOR"
+              text={labels.PRODUCTS.SUPPLIER()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -146,9 +183,10 @@ const CreateProductPage = () => {
               value={supplierId}
               className={`col-8 fs-2 ms-3 value custom_select ${
                 supplierId ? "not-default" : ""
-              }`}
+              } ${errors.supplierId ? "error-border" : ""}`}
               onChange={(e) => {
                 setSupplierId(e.target.value);
+                setErrors({ ...errors, supplierId: false });
               }}
               options={suppliers.map((supplier) => ({
                 value: supplier.supplier_id,
@@ -160,7 +198,7 @@ const CreateProductPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="CATEGORIA"
+              text={labels.PRODUCTS.CATEGORY()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -169,9 +207,10 @@ const CreateProductPage = () => {
               value={categoryId}
               className={`col-8 fs-2 ms-3 value custom_select ${
                 categoryId ? "not-default" : ""
-              }`}
+              } ${errors.categoryId ? "error-border" : ""}`}
               onChange={(e) => {
                 setCategoryId(e.target.value);
+                setErrors({ ...errors, categoryId: false });
               }}
               options={categories.map((category) => ({
                 value: category.category_id,
@@ -193,7 +232,7 @@ const CreateProductPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="STOCK"
+              text={labels.PRODUCTS.STOCK()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -202,16 +241,19 @@ const CreateProductPage = () => {
               name="stock"
               value={stock}
               placeholder="Ingrese la cantidad en stock"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.stock ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setStock(e.target.value);
+                setErrors({ ...errors, stock: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="PRECIO COMPRA"
+              text={labels.PRODUCTS.PURCHASE_PRICE()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -220,16 +262,19 @@ const CreateProductPage = () => {
               name="purchasePrice"
               value={purchasePrice}
               placeholder="Ingrese el precio de compra"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.purchasePrice ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setPurchasePrice(e.target.value);
+                setErrors({ ...errors, purchasePrice: false });
               }}
             />
           </div>
           <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="PRECIO VENTA"
+              text={labels.PRODUCTS.SELLING_PRICE()}
               className="label col-2 fw-bold"
             ></Typography>
 
@@ -238,20 +283,40 @@ const CreateProductPage = () => {
               name="sellingPrice"
               value={sellingPrice}
               placeholder="Ingrese el precio de venta"
-              className="col-8 fs-2 ms-3 value"
+              className={`col-8 fs-2 ms-3 value ${
+                errors.sellingPrice ? "error-border" : ""
+              }`}
               onChange={(e) => {
                 setSellingPrice(e.target.value);
+                setErrors({ ...errors, sellingPrice: false });
               }}
             />
           </div>
           <div className="value_label_container">
             <Typography
               level="p"
-              text="ESTADO"
+              text={labels.PRODUCTS.STATUS()}
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="status"
+              value={statusId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                statusId ? "not-default" : ""
+              } ${errors.statusId ? "error-border" : ""}`}
+              onChange={(e) => {
+                setStatusId(e.target.value);
+                setErrors({ ...errors, statusId: false });
+              }}
+              options={statuses.map((status) => ({
+                value: status.status_id,
+                label: status.status,
+              }))}
+              placeholder="Seleccione un estado"
+            />
+
+            {/* <Input
               type="text"
               name="status"
               value={status}
@@ -260,7 +325,7 @@ const CreateProductPage = () => {
               onChange={(e) => {
                 setStatus(e.target.value);
               }}
-            />
+            /> */}
           </div>
           {message && (
             <Typography

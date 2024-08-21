@@ -8,7 +8,15 @@ import {
 import Typography from "../../common/Typography/Typography";
 import { Link } from "react-router-dom";
 
-const DetailsHeader = ({ text, pathSearch, pathCreate, onClick }) => {
+const DetailsHeader = ({
+  text,
+  pathSearch,
+  pathCreate,
+  onClick,
+  backButtonName,
+  editButtonName,
+  createButtonName,
+}) => {
   return (
     <div className="p-4 bg-warning">
       <div className="row">
@@ -20,7 +28,7 @@ const DetailsHeader = ({ text, pathSearch, pathCreate, onClick }) => {
               className="text-black border-dark"
             >
               <BsArrowLeftCircle className="me-2" size={"1.4em"} />
-              Regresar
+              {backButtonName}
             </Button>
           </Link>
         </div>
@@ -36,7 +44,7 @@ const DetailsHeader = ({ text, pathSearch, pathCreate, onClick }) => {
             className="text-black border-dark"
             onClick={onClick}
           >
-            Editar Producto
+            {editButtonName}
             <BsFillPencilFill className="ms-2" size={"1.4em"} />
           </Button>
         </div>
@@ -48,7 +56,7 @@ const DetailsHeader = ({ text, pathSearch, pathCreate, onClick }) => {
               size="lg"
               className="text-black border-dark"
             >
-              Crear Producto
+              {createButtonName}
               <BsPlusCircle className="ms-2 text-black " size={"1.4em"} />
             </Button>
           </Link>

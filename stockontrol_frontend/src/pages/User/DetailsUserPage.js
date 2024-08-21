@@ -18,10 +18,13 @@ const DetailsSupplierPage = () => {
   return (
     <>
       <DetailsHeader
-        text={labels.USER.DETAILS_USER_PAGE}
+        text={labels.PAGES.USER.DETAILS_USER_PAGE}
         pathSearch={"/user/search"}
         pathCreate={"/user/create"}
         onClick={() => goToUpdateUserPage(user)}
+        backButtonName={labels.BUTTONS.BACK_BUTTON}
+        editButtonName={labels.BUTTONS.EDIT_USER_BUTTON}
+        createButtonName={labels.BUTTONS.CREATE_USER_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
