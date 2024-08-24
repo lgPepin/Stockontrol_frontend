@@ -136,27 +136,27 @@ export const SideBarData = [
       {
         title: "Crear",
         icon: <BsPlusCircle size={"1.3em"} />,
-        link: "/listaControlStock/create",
+        link: "/listControlStock/create",
       },
       {
         title: "Buscar",
         icon: <BsSearch size={"1.3em"} />,
-        link: "/listaControlStock/search",
+        link: "/listControlStock/search",
       },
       {
         title: "Actualizar",
         icon: <BsFillPencilFill size={"1.3em"} />,
-        link: "/listaControlStock/search",
+        link: "/listControlStock/search",
       },
       {
         title: "Eliminar",
         icon: <RiDeleteBin6Fill size={"1.3em"} />,
-        link: "/listaControlStock/search",
+        link: "/listControlStock/search",
       },
       {
         title: "Activar",
         icon: <CgPlayButtonO size={"1.3em"} />,
-        link: "/listaControlStock/search",
+        link: "/listControlStock/search",
       },
     ],
   },

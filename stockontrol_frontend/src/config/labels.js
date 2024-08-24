@@ -24,6 +24,13 @@ const labels = {
       CREATE_USER_PAGE: "Crear Usuario",
       UPDATE_USER_PAGE: "Actualizar Usuario",
     },
+    LISTA_CONTROL_STOCK: {
+      SEARCH_LISTA_CONTROL_STOCK_PAGE: "Buscar Lista de control de stock",
+      DETAILS_LISTA_CONTROL_STOCK_PAGE: "Detalle Lista de control de stock",
+      CREATE_LISTA_CONTROL_STOCK_PAGE: "Crear Lista de control de stock",
+      UPDATE_LISTA_CONTROL_STOCK_PAGE: "Actualizar Lista de control de stock",
+      ACTIVE_LISTA_CONTROL_STOCK_PAGE: "Controlar Productos",
+    },
   },
   PRODUCTS: {
     PRODUCT_NAME: () => (
@@ -139,10 +146,14 @@ const labels = {
     CREATE_SUPPLIER_BUTTON: "Crear Proveedor",
     CREATE_CATEGORY_BUTTON: "Crear Categoria",
     CREATE_USER_BUTTON: "Crear Usuario",
+    CREATE_LIST_CONTROL_STOCK_BUTTON: "Crear Lista de Control de Stock",
     EDIT_PRODUCT_BUTTON: "Editar Producto",
     EDIT_SUPPLIER_BUTTON: "Editar Proveedor",
     EDIT_CATEGORY_BUTTON: "Editar Categoria",
     EDIT_USER_BUTTON: "Editar Usuario",
+    EDIT_LIST_CONTROL_STOCK_BUTTON: "Editar Lista de Control de Stock",
+    ADD_PRODUCT: "Añadir Producto",
+    HIDE_PRODUCTS_LIST: "Esconder la lista de productos",
   },
 };
 
