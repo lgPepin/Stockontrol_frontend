@@ -69,7 +69,7 @@ const UpdateCategoryPage = () => {
   return (
     <>
       <UpdateHeader
-        text={labels.PAGES.SUPPLIER.UPDATE_CATEGORY_PAGE}
+        text={labels.PAGES.CATEGORY.UPDATE_CATEGORY_PAGE}
         pathSearch={"/category/search"}
         backButtonName={labels.BUTTONS.BACK_BUTTON}
       />

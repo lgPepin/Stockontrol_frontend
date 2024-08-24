@@ -1,30 +1,27 @@
 import React from "react";
-import DetailsHeader from "../../components/Headers/DetailsHeader";
+import AlternativeDetailsHeader from "../../components/Headers/AlternativeDetailsHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
 import Typography from "../../common/Typography/Typography";
 import Input from "../../common/Input/Input";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const DetailsSupplierPage = () => {
+const AlternativeDetailsProductPage = () => {
   const location = useLocation();
-  const supplier = location.state?.supplier || {};
+  const product = location.state?.product || {};
   const navigate = useNavigate();
 
-  const goToUpdateSupplierPage = (supplier) => {
-    navigate("/supplier/update", { state: { supplier } });
+  const goToUpdateProductPage = (product) => {
+    navigate("/product/update", { state: { product } });
   };
 
   return (
     <>
-      <DetailsHeader
-        text={labels.PAGES.SUPPLIER.DETAILS_SUPPLIER_PAGE}
-        pathSearch={"/supplier/search"}
-        pathCreate={"/supplier/create"}
-        onClick={() => goToUpdateSupplierPage(supplier)}
+      <AlternativeDetailsHeader
+        text={labels.PAGES.PRODUCT.DETAILS_PRODUCT_PAGE}
+        pathSearch={"/listControlStock/search"}
+        onClick={() => goToUpdateProductPage(product)}
         backButtonName={labels.BUTTONS.BACK_BUTTON}
-        editButtonName={labels.BUTTONS.EDIT_SUPPLIER_BUTTON}
-        createButtonName={labels.BUTTONS.CREATE_SUPPLIER_BUTTON}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
@@ -40,8 +37,23 @@ const DetailsSupplierPage = () => {
 
             <Input
               type="text"
-              name="supplierName"
-              value={supplier.supplier_name || ""}
+              name="productName"
+              value={product.product_name || ""}
+              className="col-8 fs-2 ms-3 value"
+              readOnly
+            />
+          </div>
+          <div className="value_label_container mb-4 ">
+            <Typography
+              level="p"
+              text="PROVEEDOR"
+              className="label col-2 fw-bold"
+            ></Typography>
+
+            <Input
+              type="text"
+              name="supplier"
+              value={product.supplier_name || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />
@@ -49,14 +61,14 @@ const DetailsSupplierPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="IDENTIFICACION"
+              text="CATEGORIA"
               className="label col-2 fw-bold"
-            />
+            ></Typography>
 
             <Input
               type="text"
-              name="identificationNumber"
-              value={supplier.identification_number || ""}
+              name="category"
+              value={product.category_name || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />
@@ -64,89 +76,59 @@ const DetailsSupplierPage = () => {
           <div className="value_label_container mb-4">
             <Typography
               level="p"
-              text="DIRECCION"
+              text="STOCK"
               className="label col-2 fw-bold"
-            />
+            ></Typography>
 
             <Input
               type="text"
-              name="address"
-              value={supplier.address || ""}
+              name="stock"
+              value={product.stock || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />
           </div>
-          <div className="value_label_container mb-4">
+          <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="TELEFONO"
+              text="PRECIO COMPRA"
               className="label col-2 fw-bold"
-            />
+            ></Typography>
 
             <Input
               type="text"
-              name="phone"
-              value={supplier.phone || ""}
+              name="purchasePrice"
+              value={product.purchase_price || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />
           </div>
-          <div className="value_label_container mb-4">
+          <div className="value_label_container mb-4 ">
             <Typography
               level="p"
-              text="NOMBRE CONTACTO"
+              text="PRECIO VENTA"
               className="label col-2 fw-bold"
-            />
+            ></Typography>
 
             <Input
               type="text"
-              name="contactName"
-              value={supplier.contact_name || ""}
+              name="sellingPrice"
+              value={product.selling_price || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />
           </div>
-          <div className="value_label_container mb-4">
-            <Typography
-              level="p"
-              text="DIA DE PEDIDO"
-              className="label col-2 fw-bold"
-            />
-
-            <Input
-              type="text"
-              name="orderDay"
-              value={supplier.order_day || ""}
-              className="col-8 fs-2 ms-3 value"
-              readOnly
-            />
-          </div>
-          <div className="value_label_container mb-4">
-            <Typography
-              level="p"
-              text="DIA DE ENTREGA"
-              className="label col-2 fw-bold"
-            />
-
-            <Input
-              type="text"
-              name="deliveryDay"
-              value={supplier.delivery_day || ""}
-              className="col-8 fs-2 ms-3 value"
-              readOnly
-            />
-          </div>
-          <div className="value_label_container mb-4">
+          <div className="value_label_container">
             <Typography
               level="p"
               text="ESTADO"
               className="label col-2 fw-bold"
-            />
+            ></Typography>
 
             <Input
               type="text"
               name="status"
-              value={supplier.status || ""}
+              value={product.status || ""}
               className="col-8 fs-2 ms-3 value"
               readOnly
             />
@@ -156,4 +138,5 @@ const DetailsSupplierPage = () => {
     </>
   );
 };
-export default DetailsSupplierPage;
+
+export default AlternativeDetailsProductPage;

@@ -270,7 +270,7 @@ const SearchProductPage = () => {
                         <td>
                           <Link
                             to={"/product/details"}
-                            state={{ product: val }}
+                            state={{ product: val, fromSearchPage: true }}
                           >
                             {val.product_name}
                           </Link>
