@@ -30,6 +30,9 @@ const SearchListControlStockPage = () => {
   useEffect(() => {
     if (location.state?.successMessage) {
       setSuccessMessage(location.state.successMessage);
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 5000);
     }
   }, [location.state]);
 

@@ -2,6 +2,7 @@ import "./App.css";
 import SearchProductPage from "./pages/Product/SearchProductPage";
 import DetailsProductPage from "./pages/Product/DetailsProductPage";
 import AlternativeDetailsProductPage from "./pages/Product/AlternativeDetailsProductPage";
+import NegativeListDetailsProductPage from "./pages/Product/NegativeListDetailsProductPage";
 import CreateProductPage from "./pages/Product/CreateProductPage";
 import UpdateProductPage from "./pages/Product/UpdateProductPage";
 import SearchSupplierPage from "./pages/Supplier/SearchSupplierPage";
@@ -21,6 +22,8 @@ import DetailsListControlStockPage from "./pages/ListControlStock/DetailsListCon
 import CreateListControlStockPage from "./pages/ListControlStock/CreateListControlStockPage";
 import UpdateListControlStockPage from "./pages/ListControlStock/UpdateListControlStockPage";
 import ActiveListControlStockPage from "./pages/ListControlStock/ActiveListControlStockPage";
+import GenerateListNegativeStockPage from "./pages/ListNegativeStock/GenerateListNegativeStockPage";
+import ExcelDataLoadingPage from "./pages/DataLoading/ExcelDataLoadingPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
@@ -37,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: "/product/alternativeDetails",
     element: <AlternativeDetailsProductPage />,
+  },
+  {
+    path: "/product/negativeListDetails",
+    element: <NegativeListDetailsProductPage />,
   },
   {
     path: "/product/create",
@@ -113,6 +120,14 @@ const router = createBrowserRouter([
   {
     path: "/listControlStock/active",
     element: <ActiveListControlStockPage />,
+  },
+  {
+    path: "/listNegativeStock/generate",
+    element: <GenerateListNegativeStockPage />,
+  },
+  {
+    path: "/dataIntegration/load",
+    element: <ExcelDataLoadingPage />,
   },
 ]);
 

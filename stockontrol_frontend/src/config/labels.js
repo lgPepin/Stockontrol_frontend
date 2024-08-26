@@ -31,6 +31,13 @@ const labels = {
       UPDATE_LISTA_CONTROL_STOCK_PAGE: "Actualizar Lista de control de stock",
       ACTIVE_LISTA_CONTROL_STOCK_PAGE: "Controlar Productos",
     },
+    LISTA_NEGATIVE_STOCK: {
+      GENERATE_LISTA_NEGATIVE_STOCK_PAGE:
+        "Generar Lista de productos con stock negativo",
+    },
+    DATA_LOADING: {
+      EXCEL_DATA_LOADING_PAGE: "Cargar un archivo Excel",
+    },
   },
   PRODUCTS: {
     PRODUCT_NAME: () => (

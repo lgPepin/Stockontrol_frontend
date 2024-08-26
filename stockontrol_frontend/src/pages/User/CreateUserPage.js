@@ -11,22 +11,29 @@ import CustomSelect from "../../common/Select/CustomSelect";
 const CreateUserPage = () => {
   const [userLastName, setUserLastName] = useState("");
   const [userFirstName, setUserFirstName] = useState("");
-  const [role, setRole] = useState("");
+  const [roleId, setRoleId] = useState("");
   const [statusId, setStatusId] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [statuses, setStatuses] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [errors, setErrors] = useState({
     userLastName: false,
     userFirstName: false,
-    role: false,
+    roleId: false,
     statusId: false,
   });
 
   useEffect(() => {
     Axios.get("http://localhost:8080/api/v1/list/statuses").then((response) => {
       setStatuses(response.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/roles").then((response) => {
+      setRoles(response.data);
     });
   }, []);
 
@@ -38,7 +45,7 @@ const CreateUserPage = () => {
     const errorsObject = {
       userLastName: !userLastName,
       userFirstName: !userFirstName,
-      role: !role,
+      roleId: !roleId,
       statusId: !statusId,
     };
 
@@ -60,7 +67,7 @@ const CreateUserPage = () => {
     console.log("Submitting user:", {
       userLastName,
       userFirstName,
-      role,
+      roleId,
       statusId,
     });
     //--------------------------------------------
@@ -68,7 +75,7 @@ const CreateUserPage = () => {
     Axios.post("http://localhost:8080/api/v1/users/create", {
       userLastName: userLastName,
       userFirstName: userFirstName,
-      role: role,
+      roleId: roleId,
       statusId: statusId,
     })
       .then((response) => {
@@ -77,13 +84,13 @@ const CreateUserPage = () => {
           {
             user_lastname: userLastName,
             user_firstname: userFirstName,
-            role: role,
+            roleId: roleId,
             statusId: statusId,
           },
         ]);
         setUserLastName("");
         setUserFirstName("");
-        setRole("");
+        setRoleId("");
         setStatusId("");
         setErrors({});
         setConfirmationMessage("Usuario creado con éxito!");
@@ -164,7 +171,24 @@ const CreateUserPage = () => {
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="role"
+              value={roleId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                roleId ? "not-default" : ""
+              } ${errors.roleId ? "error-border" : ""}`}
+              onChange={(e) => {
+                setRoleId(e.target.value);
+                setErrors({ ...errors, roleId: false });
+              }}
+              options={roles.map((role) => ({
+                value: role.role_id,
+                label: role.role,
+              }))}
+              placeholder="Seleccione un rol"
+            />
+
+            {/* <Input
               type="text"
               name="role"
               value={role}
@@ -176,7 +200,7 @@ const CreateUserPage = () => {
                 setRole(e.target.value);
                 setErrors({ ...errors, role: false });
               }}
-            />
+            /> */}
           </div>
           <div className="value_label_container mb-4">
             <Typography
