@@ -15,11 +15,12 @@ const UpdateUserPage = () => {
 
   const [userLastName, setUserLastName] = useState(user.user_lastname || "");
   const [userFirstName, setUserFirstName] = useState(user.user_firstname || "");
-  const [role, setRole] = useState(user.role || "");
+  const [roleId, setRoleId] = useState(user.roleId || "");
   const [statusId, setStatusId] = useState(user.statusId || "");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [statuses, setStatuses] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [errors, setErrors] = useState({
     userLastName: false,
     userFirstName: false,
@@ -44,6 +45,21 @@ const UpdateUserPage = () => {
       });
   }, [user.status]);
 
+  useEffect(() => {
+    Axios.get("http://localhost:8080/api/v1/list/roles")
+      .then((response) => {
+        setRoles(response.data);
+
+        const role = response.data.find((role) => role.role === user.role);
+        if (role) {
+          setRoleId(role.role_id);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al recuperar los roles :", error);
+      });
+  }, [user.role]);
+
   // const validInputs = () => {
   //   return userLastName && userFirstName && role && statusId;
   // };
@@ -52,7 +68,7 @@ const UpdateUserPage = () => {
     const errorsObject = {
       userLastName: !userLastName,
       userFirstName: !userFirstName,
-      role: !role,
+      roleId: !roleId,
       statusId: !statusId,
     };
 
@@ -76,13 +92,13 @@ const UpdateUserPage = () => {
     Axios.put(`http://localhost:8080/api/v1/users/update/${user.user_id}`, {
       user_lastname: userLastName,
       user_firstname: userFirstName,
-      role: role,
+      role_id: roleId,
       status_id: statusId,
     })
       .then((response) => {
         setUserLastName("");
         setUserFirstName("");
-        setRole("");
+        setRoleId("");
         setStatusId("");
         setMessage("El usuario ha sido actualizado con éxito.");
         setError("");
@@ -160,7 +176,24 @@ const UpdateUserPage = () => {
               className="label col-2 fw-bold"
             ></Typography>
 
-            <Input
+            <CustomSelect
+              name="role"
+              value={roleId}
+              className={`col-8 fs-2 ms-3 value custom_select ${
+                roleId ? "not-default" : ""
+              } ${errors.roleId ? "error-border" : ""}`}
+              onChange={(e) => {
+                setRoleId(e.target.value);
+                setErrors({ ...errors, roleId: false });
+              }}
+              options={roles.map((role) => ({
+                value: role.role_id,
+                label: role.role,
+              }))}
+              placeholder="Seleccione un rol"
+            />
+
+            {/* <Input
               type="text"
               name="role"
               value={role}
@@ -172,7 +205,7 @@ const UpdateUserPage = () => {
                 setRole(e.target.value);
                 setErrors({ ...errors, role: false });
               }}
-            />
+            /> */}
           </div>
           <div className="value_label_container">
             <Typography

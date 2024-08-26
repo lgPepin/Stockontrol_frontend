@@ -1,5 +1,11 @@
 import React from "react";
-import { FaHome, FaBox, FaUser, FaListUl } from "react-icons/fa";
+import {
+  FaHome,
+  FaBox,
+  FaUser,
+  FaListUl,
+  FaRegFileExcel,
+} from "react-icons/fa";
 import {
   RiArrowDownSFill,
   RiArrowUpSFill,
@@ -8,6 +14,8 @@ import {
 import { BsPlusCircle, BsFillPencilFill, BsSearch } from "react-icons/bs";
 import { TbTruckDelivery, TbCategoryFilled } from "react-icons/tb";
 import { CgPlayButtonO } from "react-icons/cg";
+import { CgPlayListRemove } from "react-icons/cg";
+import { BsDatabaseFillDown } from "react-icons/bs";
 
 export const SideBarData = [
   {
@@ -157,6 +165,34 @@ export const SideBarData = [
         title: "Activar",
         icon: <CgPlayButtonO size={"1.3em"} />,
         link: "/listControlStock/search",
+      },
+    ],
+  },
+  {
+    title: "Lista de productos con stock negativo",
+    icon: <CgPlayListRemove size={"2.4em"} />,
+    link: "/listaNegativeStock/search",
+    iconClosed: <RiArrowDownSFill />,
+    iconOpened: <RiArrowUpSFill />,
+    subNav: [
+      {
+        title: "Generar lista",
+        icon: <CgPlayButtonO size={"1.3em"} />,
+        link: "/listNegativeStock/generate",
+      },
+    ],
+  },
+  {
+    title: "Integración de datos",
+    icon: <BsDatabaseFillDown size={"2em"} />,
+    link: "/dataIntegration/search",
+    iconClosed: <RiArrowDownSFill />,
+    iconOpened: <RiArrowUpSFill />,
+    subNav: [
+      {
+        title: "Cargar archivo Excel",
+        icon: <FaRegFileExcel size={"1.3em"} />,
+        link: "/dataIntegration/load",
       },
     ],
   },
