@@ -3,16 +3,14 @@ import GenerateHeader from "../../components/Headers/GenerateHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
 import Axios from "axios";
-import Typography from "../../common/Typography/Typography";
 import { FaEye } from "react-icons/fa";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
 
-const GenerateListNegativeStockPage = () => {
+const GenerateListNegativeStockPage = ({ onLogout }) => {
   const [productsList, setProductsList] = useState([]);
   const [warningMessage, setWarningMessage] = useState("");
   const [noResultsMessage, setNoResultsMessage] = useState("");
-
   const navigate = useNavigate();
 
   const goToDetailsProductPage = (product) => {
@@ -48,33 +46,35 @@ const GenerateListNegativeStockPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-4 ">
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-4 col-2"
+            className="text-white border-dark mt-5 offset-4 col-2"
             onClick={generateNegativeStockList}
           >
-            Generar lista
+            {labels.BUTTONS.GENERATE_LIST_BUTTON}
           </Button>
           {warningMessage && (
-            <Typography
-              level="p"
-              text={warningMessage}
-              className="text-danger mt-3 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center"}
+              role="alert"
+            >
+              {warningMessage}
+            </div>
           )}
 
           <div className="separator my-4 col-10"></div>
 
           {noResultsMessage ? (
-            <Typography
-              level="h3"
-              text={noResultsMessage}
-              className="text-danger mt-5 offset-1 fw-bold fs-1"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center"}
+              role="alert"
+            >
+              {noResultsMessage}
+            </div>
           ) : (
             <table className="table table-striped table_size">
               <thead>

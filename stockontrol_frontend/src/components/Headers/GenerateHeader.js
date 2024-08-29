@@ -13,7 +13,7 @@ const GenerateHeader = ({ text, pathSearch, backButtonName }) => {
             <Button
               variant="secondary"
               size="lg"
-              className="text-black border-dark"
+              className="text-white border-dark"
             >
               <BsArrowLeftCircle className="me-2" size={"1.4em"} />
               {backButtonName}
@@ -21,7 +21,7 @@ const GenerateHeader = ({ text, pathSearch, backButtonName }) => {
           </Link>
         </div>
 
-        <div className="offset-1 col-8">
+        <div className="text-center col-8">
           <Typography level={"h1"} text={text} />
         </div>
       </div>

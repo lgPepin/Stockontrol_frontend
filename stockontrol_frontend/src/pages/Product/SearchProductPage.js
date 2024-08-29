@@ -11,8 +11,9 @@ import { BsFillPencilFill } from "react-icons/bs";
 import { FaEye } from "react-icons/fa";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchUserRole } from "../../service/ConnectedUserData";
 
-const SearchProductPage = () => {
+const SearchProductPage = ({ onLogout }) => {
   const [productName, setProductName] = useState("");
   const [supplier, setSupplier] = useState("");
   const [category, setCategory] = useState("");
@@ -21,7 +22,8 @@ const SearchProductPage = () => {
   const [noResultsMessage, setNoResultsMessage] = useState("");
   const [successDeleteMessage, setSuccessDeleteMessage] = useState("");
   const [errorDeleteMessage, setErrorDeleteMessage] = useState("");
-
+  const [userRole, setUserRole] = useState(null);
+  const allowedRoles = ["Administrador"];
   const navigate = useNavigate();
 
   const goToDetailsProductPage = (product) => {
@@ -29,7 +31,6 @@ const SearchProductPage = () => {
   };
 
   const goToUpdateProductPage = (product) => {
-    console.log("Je cherche product: ", product);
     navigate("/product/update", {
       state: { product },
     });
@@ -70,30 +71,6 @@ const SearchProductPage = () => {
         console.error("Error en la búsqueda de productos :", error);
       });
   };
-
-  // const deleteProduct = (productName) => {
-  //   Axios.delete(`http://localhost:8080/api/v1/delete/${productName}`)
-  //     .then((response) => {
-  //       setSuccessDeleteMessage(response.data.message);
-  //       setProductsList((prevList) =>
-  //         prevList.filter((product) => product.product_name !== productName)
-  //       );
-  //       setTimeout(() => {
-  //         setSuccessDeleteMessage("");
-  //       }, 5000);
-  //       return;
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error al eliminar el producto :", error);
-  //       setErrorDeleteMessage(
-  //         error.response?.data?.message || "Error a la supresión del producto"
-  //       );
-  //       setTimeout(() => {
-  //         setErrorDeleteMessage("");
-  //       }, 5000);
-  //       return;
-  //     });
-  // };
 
   const deleteProduct = (productId, productName) => {
     if (isNaN(productId)) {
@@ -139,6 +116,19 @@ const SearchProductPage = () => {
     setNoResultsMessage("");
   };
 
+  useEffect(() => {
+    const getUserRole = async () => {
+      try {
+        const role = await fetchUserRole();
+        setUserRole(role);
+      } catch (error) {
+        console.error("Error al recuperar el rol del usuario:", error);
+      }
+    };
+
+    getUserRole();
+  }, []);
+
   return (
     <>
       <SearchHeader
@@ -148,7 +138,7 @@ const SearchProductPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-4 ">
           <div className="value_label_container mb-4">
@@ -205,37 +195,40 @@ const SearchProductPage = () => {
               }}
             />
           </div>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={deleteResultsList}
-          >
-            Borrar Lista
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={searchProduct}
-          >
-            Buscar
-          </Button>
           {warningMessage && (
-            <Typography
-              level="p"
-              text={warningMessage}
-              className="text-danger mt-3 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center col-11"}
+              role="alert"
+            >
+              {warningMessage}
+            </div>
           )}
 
           {successDeleteMessage && (
-            <Typography
-              level="p"
-              text={successDeleteMessage}
-              className="text-primary mt-3 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-success text-center col-11"}
+              role="alert"
+            >
+              {successDeleteMessage}
+            </div>
           )}
+
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            {labels.BUTTONS.DELETE_LIST_BUTTON}
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={searchProduct}
+          >
+            {labels.BUTTONS.SEARCH_BUTTON}
+          </Button>
 
           <div className="separator my-4 col-10"></div>
 
@@ -261,7 +254,9 @@ const SearchProductPage = () => {
                       <th className="col-1">Categoria</th>
                       <th className="col-1 table-icon">Ver</th>
                       <th className="col-1 table-icon">Editar</th>
-                      <th className="col-1 table-icon">Eliminar</th>
+                      {allowedRoles.includes(userRole) && (
+                        <th className="col-1 table-icon">Eliminar</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -295,14 +290,16 @@ const SearchProductPage = () => {
                             }}
                           />
                         </td>
-                        <td className="table-icon">
-                          <RiDeleteBin6Fill
-                            className="icon custom_icon"
-                            size={"1.3em"}
-                            onClick={() => deleteProduct(val.product_id)}
-                            data-testid="delete-icon"
-                          />
-                        </td>
+                        {allowedRoles.includes(userRole) && (
+                          <td className="table-icon">
+                            <RiDeleteBin6Fill
+                              className="icon custom_icon"
+                              size={"1.3em"}
+                              onClick={() => deleteProduct(val.product_id)}
+                              data-testid="delete-icon"
+                            />
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>

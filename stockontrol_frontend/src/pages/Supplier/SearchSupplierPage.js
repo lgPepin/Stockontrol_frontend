@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchHeader from "../../components/Headers/SearchHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
@@ -10,14 +10,17 @@ import { BsFillPencilFill } from "react-icons/bs";
 import { FaEye } from "react-icons/fa";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchUserRole } from "../../service/ConnectedUserData";
 
-const SearchSupplierPage = () => {
+const SearchSupplierPage = ({ onLogout }) => {
   const [supplierName, setSupplierName] = useState("");
   const [supplierList, setSupplierList] = useState([]);
   const [warningMessage, setWarningMessage] = useState("");
   const [noResultsMessage, setNoResultsMessage] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  const [userRole, setUserRole] = useState(null);
+  const allowedRoles = ["Administrador"];
 
   const navigate = useNavigate();
 
@@ -43,6 +46,9 @@ const SearchSupplierPage = () => {
         "Por favor ingresar al menos 3 caracteres para iniciar la busqueda"
       );
       setNoResultsMessage("");
+      setTimeout(() => {
+        setWarningMessage("");
+      }, 5000);
 
       return;
     }
@@ -56,7 +62,7 @@ const SearchSupplierPage = () => {
     })
       .then((response) => {
         if (response.data.length === 0) {
-          setNoResultsMessage("No proveedor encontrado");
+          setNoResultsMessage("Proveedor no encontrado");
         } else {
           setNoResultsMessage("");
         }
@@ -68,9 +74,14 @@ const SearchSupplierPage = () => {
   };
 
   const deleteSupplier = (supplierName) => {
-    Axios.delete(
-      `http://localhost:8080/api/v1/suppliers/delete/${supplierName}`
+    Axios.patch(
+      `http://localhost:8080/api/v1/suppliers/update-products/${supplierName}`
     )
+      .then(() => {
+        return Axios.delete(
+          `http://localhost:8080/api/v1/suppliers/delete/${supplierName}`
+        );
+      })
       .then((response) => {
         setSupplierList((prevList) =>
           prevList.filter((supplier) => supplier.supplier_name !== supplierName)
@@ -82,7 +93,6 @@ const SearchSupplierPage = () => {
         setTimeout(() => {
           setConfirmationMessage("");
         }, 5000);
-        return;
       })
       .catch((error) => {
         console.error("Error al suprimir el proveedor", error);
@@ -91,9 +101,21 @@ const SearchSupplierPage = () => {
         setTimeout(() => {
           setConfirmationMessage("");
         }, 5000);
-        return;
       });
   };
+
+  useEffect(() => {
+    const getUserRole = async () => {
+      try {
+        const role = await fetchUserRole();
+        setUserRole(role);
+      } catch (error) {
+        console.error("Error al recuperar el rol del usuario:", error);
+      }
+    };
+
+    getUserRole();
+  }, []);
 
   return (
     <>
@@ -104,7 +126,7 @@ const SearchSupplierPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-4 ">
           <div className="value_label_container mb-4">
@@ -125,34 +147,43 @@ const SearchSupplierPage = () => {
               }}
             />
           </div>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={deleteResultsList}
-          >
-            Borrar Lista
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={searchSupplier}
-          >
-            Buscar
-          </Button>
+
           {warningMessage && (
-            <Typography
-              level="p"
-              text={warningMessage}
-              className="text-danger mt-3 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center"}
+              role="alert"
+            >
+              {warningMessage}
+            </div>
           )}
+
           {confirmationMessage && (
-            <div className={`mt-3 fs-3 text-${messageType}`}>
+            <div
+              className={`alert fs-3 mt-4 ${
+                messageType === "danger" ? "alert-danger" : "alert-success"
+              }`}
+              role="alert"
+            >
               {confirmationMessage}
             </div>
           )}
+
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            {labels.BUTTONS.DELETE_LIST_BUTTON}
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={searchSupplier}
+          >
+            {labels.BUTTONS.SEARCH_BUTTON}
+          </Button>
 
           <div className="separator my-4 col-10"></div>
 
@@ -169,7 +200,9 @@ const SearchSupplierPage = () => {
                   <th className="col-2">Nombre Proveedor</th>
                   <th className="col-1 table-icon">Ver</th>
                   <th className="col-1 table-icon">Editar</th>
-                  <th className="col-1 table-icon">Eliminar</th>
+                  {allowedRoles.includes(userRole) && (
+                    <th className="col-1 table-icon">Eliminar</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -194,13 +227,15 @@ const SearchSupplierPage = () => {
                         onClick={() => goToUpdateSupplierPage(val)}
                       />
                     </td>
-                    <td className="table-icon">
-                      <RiDeleteBin6Fill
-                        className="icon custom_icon"
-                        size={"1.3em"}
-                        onClick={() => deleteSupplier(val.supplier_name)}
-                      />
-                    </td>
+                    {allowedRoles.includes(userRole) && (
+                      <td className="table-icon">
+                        <RiDeleteBin6Fill
+                          className="icon custom_icon"
+                          size={"1.3em"}
+                          onClick={() => deleteSupplier(val.supplier_name)}
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

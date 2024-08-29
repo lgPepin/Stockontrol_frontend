@@ -10,7 +10,7 @@ import Button from "react-bootstrap/Button";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { BsPlusCircle } from "react-icons/bs";
 
-const CreateListControlStockPage = () => {
+const CreateListControlStockPage = ({ onLogout }) => {
   const [listControlStockName, setListControlStockName] = useState("");
   const [statusId, setStatusId] = useState("3");
   const [products, setProducts] = useState([]);
@@ -182,7 +182,7 @@ const CreateListControlStockPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-5">
           <div className="frame">
@@ -255,20 +255,20 @@ const CreateListControlStockPage = () => {
             <Button
               variant="secondary"
               size="lg"
-              className="text-black border-dark mt-5 offset-3 col-2"
-              onClick={createListControlStock}
-            >
-              Guardar
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="text-black border-dark mt-5 offset-2 col-2"
+              className="text-white border-dark mt-5 offset-3 col-2"
               onClick={toggleProductsList}
             >
               {showProductsList
                 ? labels.BUTTONS.HIDE_PRODUCTS_LIST
                 : labels.BUTTONS.ADD_PRODUCT}
+            </Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="text-white border-dark mt-5 offset-2 col-2"
+              onClick={createListControlStock}
+            >
+              {labels.BUTTONS.SAVE_BUTTON}
             </Button>
           </div>
 
@@ -336,7 +336,7 @@ const CreateListControlStockPage = () => {
               <Button
                 variant="secondary"
                 size="lg"
-                className="text-black border-dark mt-5 offset-3 col-2"
+                className="text-white border-dark mt-5 offset-3 col-2"
                 onClick={deleteResultsList}
               >
                 Borrar Lista
@@ -344,7 +344,7 @@ const CreateListControlStockPage = () => {
               <Button
                 variant="secondary"
                 size="lg"
-                className="text-black border-dark mt-5 offset-2 col-2"
+                className="text-white border-dark mt-5 offset-2 col-2"
                 onClick={searchProduct}
               >
                 Buscar

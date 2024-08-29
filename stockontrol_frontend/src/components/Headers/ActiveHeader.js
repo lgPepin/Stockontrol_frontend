@@ -5,7 +5,7 @@ const ActiveHeader = ({ text }) => {
   return (
     <div className="p-4 bg-warning">
       <div className="row">
-        <div className="offset-5 col-3 ">
+        <div className="text-center">
           <Typography level={"h1"} text={text} />
         </div>
       </div>

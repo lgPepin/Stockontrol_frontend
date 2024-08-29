@@ -8,7 +8,7 @@ import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
 import CustomSelect from "../../common/Select/CustomSelect";
 
-const CreateProductPage = () => {
+const CreateProductPage = ({ onLogout }) => {
   const [productName, setProductName] = useState("");
   const [supplierId, setSupplierId] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -53,18 +53,6 @@ const CreateProductPage = () => {
       setStatuses(response.data);
     });
   }, []);
-
-  // const validInputs = () => {
-  //   return (
-  //     productName &&
-  //     supplierId &&
-  //     categoryId &&
-  //     stock &&
-  //     purchasePrice &&
-  //     sellingPrice &&
-  //     statusId
-  //   );
-  // };
 
   const validInputs = () => {
     const errorsObject = {
@@ -131,7 +119,11 @@ const CreateProductPage = () => {
       })
       .catch((error) => {
         setMessage("");
-        setError("Error en el proceso de creación: " + error.message);
+        if (error.response && error.response.status === 401) {
+          setError("No está autorizado para realizar esta acción.");
+        } else {
+          setError("Ya existe un producto con este nombre");
+        }
         setTimeout(() => {
           setError("");
         }, 5000);
@@ -147,7 +139,7 @@ const CreateProductPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-5 frame">
           <div className="value_label_container mb-4">
@@ -218,17 +210,8 @@ const CreateProductPage = () => {
               }))}
               placeholder="Seleccione una categoria"
             />
-            {/* <Input
-              type="text"
-              name="category"
-              value={category}
-              placeholder="Ingrese el nombre de la categoría"
-              className="col-8 fs-2 ms-3 value"
-              onChange={(e) => {
-                setCategory(e.target.value);
-              }}
-            /> */}
           </div>
+
           <div className="value_label_container mb-4">
             <Typography
               level="p"
@@ -309,45 +292,39 @@ const CreateProductPage = () => {
                 setStatusId(e.target.value);
                 setErrors({ ...errors, statusId: false });
               }}
-              options={statuses.map((status) => ({
+              options={statuses.slice(0, 2).map((status) => ({
                 value: status.status_id,
                 label: status.status,
               }))}
               placeholder="Seleccione un estado"
             />
-
-            {/* <Input
-              type="text"
-              name="status"
-              value={status}
-              placeholder="Ingrese el estado"
-              className="col-8 fs-2 ms-3 value"
-              onChange={(e) => {
-                setStatus(e.target.value);
-              }}
-            /> */}
           </div>
+
           {message && (
-            <Typography
-              level="p"
-              text={message}
-              className="text-primary mt-5 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-success text-center"}
+              role="alert"
+            >
+              {message}
+            </div>
           )}
+
           {error && (
-            <Typography
-              level="p"
-              text={error}
-              className="text-danger mt-5 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center"}
+              role="alert"
+            >
+              {error}
+            </div>
           )}
+
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-5 col-2"
+            className="text-white border-dark mt-5 offset-5 col-2"
             onClick={submitProduct}
           >
-            Guardar
+            {labels.BUTTONS.SAVE_BUTTON}
           </Button>
         </div>
       </div>

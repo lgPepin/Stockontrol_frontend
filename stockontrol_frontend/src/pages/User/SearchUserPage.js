@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import SearchHeader from "../../components/Headers/SearchHeader";
+import React, { useState, useEffect } from "react";
+import SearchHeaderUsuario from "../../components/Headers/SearchHeaderUsuario";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
 import Axios from "axios";
@@ -10,15 +10,17 @@ import { BsFillPencilFill } from "react-icons/bs";
 import { FaEye } from "react-icons/fa";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchUserRole } from "../../service/ConnectedUserData";
 
-const SearchUserPage = () => {
+const SearchUserPage = ({ onLogout }) => {
   const [userLastName, setUserLastName] = useState("");
   const [userList, setUserList] = useState([]);
   const [warningMessage, setWarningMessage] = useState("");
   const [noResultsMessage, setNoResultsMessage] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-
+  const [userRole, setUserRole] = useState(null);
+  const allowedRoles = ["Administrador"];
   const navigate = useNavigate();
 
   const goToDetailsUserPage = (user) => {
@@ -50,7 +52,7 @@ const SearchUserPage = () => {
     })
       .then((response) => {
         if (response.data.length === 0) {
-          setNoResultsMessage("No usuario encontrado");
+          setNoResultsMessage("Usuario No encontrado");
         } else {
           setNoResultsMessage("");
         }
@@ -68,7 +70,7 @@ const SearchUserPage = () => {
           prevList.filter((u) => u.user_id !== user.user_id)
         );
         setConfirmationMessage(
-          `El usuario ${user.user_firstname} ${user.user_lastname} ha sido eliminado con éxito!`
+          `El usuario ${user.username} ha sido eliminado con éxito!`
         );
         setMessageType("primary");
         setTimeout(() => {
@@ -93,16 +95,33 @@ const SearchUserPage = () => {
     setNoResultsMessage("");
   };
 
+  useEffect(() => {
+    const getUserRole = async () => {
+      try {
+        const role = await fetchUserRole();
+        setUserRole(role);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération du rôle de l'utilisateur:",
+          error
+        );
+      }
+    };
+
+    getUserRole();
+  }, []);
+
   return (
     <>
-      <SearchHeader
+      <SearchHeaderUsuario
         text={labels.PAGES.USER.SEARCH_USER_PAGE}
         pathCreate={"/user/create"}
         createButtonName={labels.BUTTONS.CREATE_USER_BUTTON}
+        userRole={userRole}
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-4 ">
           <div className="value_label_container mb-4">
@@ -123,34 +142,43 @@ const SearchUserPage = () => {
               }}
             />
           </div>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={deleteResultsList}
-          >
-            Borrar Lista
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={searchUser}
-          >
-            Buscar
-          </Button>
-          {warningMessage && (
-            <Typography
-              level="p"
-              text={warningMessage}
-              className="text-danger mt-3 fs-3"
-            />
-          )}
+
           {confirmationMessage && (
-            <div className={`mt-3 fs-3 text-${messageType}`}>
+            <div
+              className={`alert fs-3 mt-4 text-center ${
+                messageType === "danger" ? "alert-danger" : "alert-success"
+              }`}
+              role="alert"
+            >
               {confirmationMessage}
             </div>
           )}
+
+          {warningMessage && (
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center"}
+              role="alert"
+            >
+              {warningMessage}
+            </div>
+          )}
+
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            {labels.BUTTONS.DELETE_LIST_BUTTON}
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={searchUser}
+          >
+            {labels.BUTTONS.SEARCH_BUTTON}
+          </Button>
 
           <div className="separator my-4 col-10"></div>
 
@@ -164,11 +192,16 @@ const SearchUserPage = () => {
             <table className="table table-striped table_size">
               <thead>
                 <tr>
-                  <th className="col-2">Apellido Usuario</th>
-                  <th className="col-2">Nombre Usuario</th>
+                  <th className="col-1">Usuario</th>
+                  <th className="col-1">Apellido Usuario</th>
+                  <th className="col-1">Nombre Usuario</th>
                   <th className="col-1 table-icon">Ver</th>
-                  <th className="col-1 table-icon">Editar</th>
-                  <th className="col-1 table-icon">Eliminar</th>
+                  {allowedRoles.includes(userRole) && (
+                    <th className="col-1 table-icon">Editar</th>
+                  )}
+                  {allowedRoles.includes(userRole) && (
+                    <th className="col-1 table-icon">Eliminar</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -176,8 +209,11 @@ const SearchUserPage = () => {
                   <tr key={user.user_id}>
                     <td>
                       <Link to={"/user/details"} state={{ user }}>
-                        {user.user_lastname}
+                        {user.username}
                       </Link>
+                    </td>
+                    <td>
+                      <Typography level="p" text={user.user_lastname} />
                     </td>
                     <td>
                       <Typography level="p" text={user.user_firstname} />
@@ -189,20 +225,24 @@ const SearchUserPage = () => {
                         onClick={() => goToDetailsUserPage(user)}
                       />
                     </td>
-                    <td className="table-icon">
-                      <BsFillPencilFill
-                        className="icon custom_icon"
-                        size={"1.3em"}
-                        onClick={() => goToUpdateUserPage(user)}
-                      />
-                    </td>
-                    <td className="table-icon">
-                      <RiDeleteBin6Fill
-                        className="icon custom_icon"
-                        size={"1.3em"}
-                        onClick={() => deleteUser(user)}
-                      />
-                    </td>
+                    {allowedRoles.includes(userRole) && (
+                      <td className="table-icon">
+                        <BsFillPencilFill
+                          className="icon custom_icon"
+                          size={"1.3em"}
+                          onClick={() => goToUpdateUserPage(user)}
+                        />
+                      </td>
+                    )}
+                    {allowedRoles.includes(userRole) && (
+                      <td className="table-icon">
+                        <RiDeleteBin6Fill
+                          className="icon custom_icon"
+                          size={"1.3em"}
+                          onClick={() => deleteUser(user)}
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

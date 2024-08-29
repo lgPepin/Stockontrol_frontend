@@ -7,7 +7,7 @@ import Input from "../../common/Input/Input";
 import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
 
-const CreateCategoryPage = () => {
+const CreateCategoryPage = ({ onLogout }) => {
   const [categoryName, setCategoryName] = useState("");
   const [categoriesList, setCategoriesList] = useState([]);
   const [confirmationMessage, setConfirmationMessage] = useState("");
@@ -56,7 +56,7 @@ const CreateCategoryPage = () => {
       })
       .catch((error) => {
         console.error("Error al crear la categoria!", error);
-        setConfirmationMessage("Error al crear la categoria");
+        setConfirmationMessage("Ya existe una categoria con este nombre");
         setMessageType("danger");
         setTimeout(() => {
           setConfirmationMessage("");
@@ -74,7 +74,7 @@ const CreateCategoryPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-5 frame">
           <div className="value_label_container mb-4">
@@ -100,17 +100,23 @@ const CreateCategoryPage = () => {
           </div>
 
           {confirmationMessage && (
-            <div className={`mt-3 fs-3 text-${messageType}`}>
-              <Typography level="p" text={confirmationMessage} />
+            <div
+              className={`alert fs-3 mt-4 text-center ${
+                messageType === "danger" ? "alert-danger" : "alert-success"
+              }`}
+              role="alert"
+            >
+              {confirmationMessage}
             </div>
           )}
+
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-5 col-2"
+            className="text-white border-dark mt-5 offset-5 col-2"
             onClick={submitCategory}
           >
-            Guardar
+            {labels.BUTTONS.SAVE_BUTTON}
           </Button>
         </div>
       </div>

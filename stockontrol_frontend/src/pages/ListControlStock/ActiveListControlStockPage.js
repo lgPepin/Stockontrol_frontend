@@ -8,18 +8,16 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 
-const DetailsListControlStockPage = () => {
+const DetailsListControlStockPage = ({ onLogout }) => {
   const location = useLocation();
   const listControlStock = location.state?.listControlStock || {};
   const navigate = useNavigate();
-
   const [errorMessage, setErrorMessage] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [productsInfo, setProductsInfo] = useState(
     listControlStock.products_info || []
   );
   const [stockReal, setStockReal] = useState(productsInfo[0]?.stock_real || "");
-
   const currentProduct = productsInfo[currentIndex] || {};
 
   const handleStockRealChange = (event) => {
@@ -66,7 +64,7 @@ const DetailsListControlStockPage = () => {
       if (response.status === 200) {
         navigate("/listControlStock/search", {
           state: {
-            successMessage: `La lista de control de stock ${listName} fue terminada exitosamente y los datos asociados fueron actualizados exitosamente`,
+            successMessage: `La lista de control de stock ${listName} fue actualizada exitosamente,`,
           },
         });
       }
@@ -99,7 +97,7 @@ const DetailsListControlStockPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-5 frame">
           <div className="value_label_container mb-4">
@@ -147,15 +145,15 @@ const DetailsListControlStockPage = () => {
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-3 col-2"
+            className="text-white border-dark mt-5 offset-3 col-2"
             onClick={() => handleCancel(listControlStock)}
           >
-            Cancelar
+            {labels.BUTTONS.CANCEL_BUTTON}
           </Button>
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
+            className="text-white border-dark mt-5 offset-2 col-2"
             onClick={() => handleNext(listControlStock)}
           >
             {currentIndex < productsInfo.length - 1 ? "Siguiente" : "Terminar"}

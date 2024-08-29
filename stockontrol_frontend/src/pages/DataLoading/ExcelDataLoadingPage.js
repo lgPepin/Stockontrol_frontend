@@ -8,11 +8,12 @@ import Button from "react-bootstrap/esm/Button";
 import Input from "../../common/Input/Input";
 import * as XLSX from "xlsx";
 
-const ExcelDataLoadingPage = () => {
+const ExcelDataLoadingPage = ({ onLogout }) => {
   const [fileName, setFileName] = useState(null);
   const [productsList, setProductsList] = useState([]);
   const [warningMessage, setWarningMessage] = useState("");
-  const [warningType, setWarningType] = useState(""); // 'success' ou 'error'
+  const [warningType, setWarningType] = useState("");
+  const [jsonData, setJsonData] = useState(null);
 
   const handleFile = async (e) => {
     const file = e.target.files[0];
@@ -20,67 +21,80 @@ const ExcelDataLoadingPage = () => {
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
     const jsonData = XLSX.utils.sheet_to_json(worksheet, {
       header: 1,
       defval: "",
     });
+    setJsonData(jsonData);
 
-    // Extraction des données nécessaires
     const products = jsonData.slice(1).map((row) => ({
-      product_name: row[3], // Colonne "Nombre"
-      selling_price: row[17], // Colonne "PVP1"
-      purchase_price: row[25], // Colonne "Costo"
-      stock: row[27], // Colonne "Stock"
-      supplier_name: row[2], // Colonne "Categoría"
-      status: "Activo", // Statut par défaut
+      product_name: row[3],
+      selling_price: row[17],
+      purchase_price: row[26],
+      stock: row[27],
+      supplier_name: row[2],
     }));
 
     setProductsList(products);
   };
 
+  const buildSuppliersList = (jsonData) => {
+    if (jsonData.length === 0 || jsonData[0].length === 0) {
+      console.error("jsonData es vacio o invalido");
+      return [];
+    }
+
+    const headers = jsonData[0];
+    const categoriaIndex = headers.indexOf("Categoría");
+
+    if (categoriaIndex === -1) {
+      console.error("Columna 'Categoría' no enconcontrada en headers");
+      return [];
+    }
+
+    const categorias = jsonData.slice(1).map((row) => row[categoriaIndex]);
+    const categoriasUnicas = [...new Set(categorias)];
+
+    console.log(categoriasUnicas);
+    return categoriasUnicas;
+  };
+
   const handleDataUpload = async () => {
-    try {
-      // Insertion des fournisseurs
-      const suppliers = [...new Set(productsList.map((p) => p.supplier_name))];
-      await Axios.post(
-        "http://localhost:8080/api/v1/loadData/loadSupplier",
-        suppliers.map((supplier_name) => ({
-          supplier_name,
-          status: "Activo",
-        }))
-      );
-
-      // Récupération des IDs des fournisseurs
-      const { data: suppliersData } = await Axios.get(
-        "http://localhost:8080/api/v1/loadData/suppliersId"
-      );
-      const supplierMap = suppliersData.reduce((acc, supplier) => {
-        acc[supplier.supplier_name] = supplier.supplier_id;
-        return acc;
-      }, {});
-
-      // Préparation des produits avec supplier_id
-      const productsWithSupplierId = productsList.map((product) => ({
-        ...product,
-        supplier_id: supplierMap[product.supplier_name],
-      }));
-
-      // Insertion des produits
-      await Axios.post(
-        "http://localhost:8080/api/v1/loadData/loadProduct",
-        productsWithSupplierId
-      );
-
-      // Afficher le message de succès
-      setWarningType("success");
-      setWarningMessage("Datos cargados con éxito!");
-    } catch (error) {
-      // Afficher le message d'erreur
+    if (!jsonData) {
+      setWarningMessage("No hay datos para cargar.");
       setWarningType("error");
-      setWarningMessage("El archivo contiene demasiados datos para cargarlos.");
-      console.error(error);
+      return;
+    }
+
+    try {
+      await Axios.delete(
+        "http://localhost:8080/api/v1/loadData/deleteSuppliers"
+      );
+      setWarningMessage("Todos los proveedores fueron suprimidos con éxito");
+      setWarningType("success");
+
+      const categoriasUnicas = buildSuppliersList(jsonData);
+
+      await Axios.post(
+        "http://localhost:8080/api/v1/loadData/insertSuppliers",
+        {
+          categorias: categoriasUnicas,
+        }
+      );
+      setWarningMessage("Datos cargados con éxito!");
+      setWarningType("success");
+
+      await Axios.post("http://localhost:8080/api/v1/loadData/insertProducts", {
+        products: productsList,
+      });
+      setWarningMessage("Datos cargados con éxito!");
+      setWarningType("success");
+    } catch (error) {
+      setWarningMessage("Error al cargar los datos.");
+      setWarningType("error");
+      console.error("Error al cargar los datos:", error);
     } finally {
-      // Effacer le message après 5 secondes
       setTimeout(() => {
         setWarningMessage("");
         setWarningType("");
@@ -97,7 +111,7 @@ const ExcelDataLoadingPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-4 ">
           <div className="value_label_container mb-4 offset-4">
@@ -125,14 +139,15 @@ const ExcelDataLoadingPage = () => {
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-4 col-2"
+            className="text-white border-dark mt-5 offset-4 col-2"
             onClick={handleDataUpload}
           >
-            Cargar datos
+            {labels.BUTTONS.LOAD_DATA_BUTTON}
           </Button>
+
           {warningMessage && (
             <div
-              className={`alert fs-3 mt-4 ${
+              className={`alert fs-3 mt-4 text-center ${
                 warningType === "success" ? "alert-success" : "alert-danger"
               }`}
               role="alert"

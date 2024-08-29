@@ -8,7 +8,7 @@ import Typography from "../../common/Typography/Typography";
 import Button from "react-bootstrap/Button";
 import { useLocation } from "react-router-dom";
 
-const UpdateCategoryPage = () => {
+const UpdateCategoryPage = ({ onLogout }) => {
   const location = useLocation();
   const category = location.state?.category || {};
   const [categoryName, setCategoryName] = useState(
@@ -59,7 +59,7 @@ const UpdateCategoryPage = () => {
       })
       .catch((error) => {
         setMessage("");
-        setError("Error en el proceso de actualización: " + error.message);
+        setError("Ya existe una categoria con este nombre");
         setTimeout(() => {
           setError("");
         }, 5000);
@@ -75,7 +75,7 @@ const UpdateCategoryPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-5 frame">
           <div className="value_label_container mb-4">
@@ -100,26 +100,29 @@ const UpdateCategoryPage = () => {
             />
           </div>
           {message && (
-            <Typography
-              level="p"
-              text={message}
-              className="text-primary mt-5 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-success text-center"}
+              role="alert"
+            >
+              {message}
+            </div>
           )}
           {error && (
-            <Typography
-              level="p"
-              text={error}
-              className="text-danger mt-5 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center"}
+              role="alert"
+            >
+              {error}
+            </div>
           )}
+
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-5 col-2"
+            className="text-white border-dark mt-5 offset-5 col-2"
             onClick={submitCategory}
           >
-            Guardar
+            {labels.BUTTONS.SAVE_BUTTON}
           </Button>
         </div>
       </div>
