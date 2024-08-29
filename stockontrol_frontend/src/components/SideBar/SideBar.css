@@ -1,0 +1,111 @@
+.sideBar {
+  height: 100%;
+  width: 250px;
+  transition: 350ms;
+}
+
+.sideBarList {
+  height: auto;
+  width: 100%;
+  padding: 0;
+}
+
+.hideSidebar {
+  width: 60px;
+  height: 100%;
+  transition: 350ms;
+}
+
+.hideIcon {
+  display: none;
+}
+
+.seeMenuIcon {
+  display: block;
+  margin: auto;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.seeCloseIcon {
+  margin-left: 220px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: opacity 350ms ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.showCloseIcon {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.rowList {
+  width: 100%;
+  height: 60px;
+  list-style-type: none;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+.rowList:hover {
+  cursor: pointer;
+  background-color: #293846;
+}
+
+#icon {
+  flex: 30%;
+  display: grid;
+  place-items: center;
+}
+
+#title {
+  flex: 70%;
+}
+
+#active {
+  background-color: #293846;
+}
+
+.subNavList {
+  list-style-type: none;
+  padding: 0;
+  padding-left: 20px;
+}
+
+.subNavItem {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.subNavItem.active {
+  background-color: #293846;
+}
+
+.subNavItem:hover {
+  cursor: pointer;
+  background-color: #293846;
+}
+
+.subNavLink {
+  text-decoration: none;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+.userDetails {
+  color: white;
+  border: 1px solid white;
+  text-align: center;
+  padding-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+}
