@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchHeader from "../../components/Headers/SearchHeader";
 import labels from "../../config/labels";
 import SideBar from "../../components/SideBar/SideBar";
@@ -10,15 +10,17 @@ import { BsFillPencilFill } from "react-icons/bs";
 import { FaEye } from "react-icons/fa";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchUserRole } from "../../service/ConnectedUserData";
 
-const SearchCategoryPage = () => {
+const SearchCategoryPage = ({ onLogout }) => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryList, setCategoryList] = useState([]);
   const [warningMessage, setWarningMessage] = useState("");
   const [noResultsMessage, setNoResultsMessage] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-
+  const [userRole, setUserRole] = useState(null);
+  const allowedRoles = ["Administrador"];
   const navigate = useNavigate();
 
   const goToDetailsCategoryPage = (category) => {
@@ -61,9 +63,14 @@ const SearchCategoryPage = () => {
   };
 
   const deleteCategory = (categoryName) => {
-    Axios.delete(
-      `http://localhost:8080/api/v1/categories/delete/${categoryName}`
+    Axios.patch(
+      `http://localhost:8080/api/v1/categories/update-products/${categoryName}`
     )
+      .then(() => {
+        return Axios.delete(
+          `http://localhost:8080/api/v1/categories/delete/${categoryName}`
+        );
+      })
       .then((response) => {
         setCategoryList((prevList) =>
           prevList.filter((category) => category.category_name !== categoryName)
@@ -75,7 +82,6 @@ const SearchCategoryPage = () => {
         setTimeout(() => {
           setConfirmationMessage("");
         }, 5000);
-        return;
       })
       .catch((error) => {
         console.error("Error al suprimir la categoria", error);
@@ -84,7 +90,6 @@ const SearchCategoryPage = () => {
         setTimeout(() => {
           setConfirmationMessage("");
         }, 5000);
-        return;
       });
   };
 
@@ -93,6 +98,19 @@ const SearchCategoryPage = () => {
     setCategoryName("");
     setNoResultsMessage("");
   };
+
+  useEffect(() => {
+    const getUserRole = async () => {
+      try {
+        const role = await fetchUserRole();
+        setUserRole(role);
+      } catch (error) {
+        console.error("Error al recuperar el rol del usuario:", error);
+      }
+    };
+
+    getUserRole();
+  }, []);
 
   return (
     <>
@@ -103,7 +121,7 @@ const SearchCategoryPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-4 ">
           <div className="value_label_container mb-4">
@@ -124,34 +142,43 @@ const SearchCategoryPage = () => {
               }}
             />
           </div>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={deleteResultsList}
-          >
-            Borrar Lista
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
-            onClick={searchCategory}
-          >
-            Buscar
-          </Button>
+
           {warningMessage && (
-            <Typography
-              level="p"
-              text={warningMessage}
-              className="text-danger mt-3 fs-3"
-            />
+            <div
+              className={"alert fs-3 mt-4 alert-danger text-center"}
+              role="alert"
+            >
+              {warningMessage}
+            </div>
           )}
+
           {confirmationMessage && (
-            <div className={`mt-3 fs-3 text-${messageType}`}>
+            <div
+              className={`alert fs-3 mt-4 ${
+                messageType === "danger" ? "alert-danger" : "alert-success"
+              }`}
+              role="alert"
+            >
               {confirmationMessage}
             </div>
           )}
+
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={deleteResultsList}
+          >
+            {labels.BUTTONS.DELETE_LIST_BUTTON}
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-white border-dark mt-5 offset-2 col-2"
+            onClick={searchCategory}
+          >
+            {labels.BUTTONS.SEARCH_BUTTON}
+          </Button>
 
           <div className="separator my-4 col-10"></div>
 
@@ -168,7 +195,9 @@ const SearchCategoryPage = () => {
                   <th className="col-2">Nombre Categoria</th>
                   <th className="col-1 table-icon">Ver</th>
                   <th className="col-1 table-icon">Editar</th>
-                  <th className="col-1 table-icon">Eliminar</th>
+                  {allowedRoles.includes(userRole) && (
+                    <th className="col-1 table-icon">Eliminar</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -193,13 +222,15 @@ const SearchCategoryPage = () => {
                         onClick={() => goToUpdateCategoryPage(val)}
                       />
                     </td>
-                    <td className="table-icon">
-                      <RiDeleteBin6Fill
-                        className="icon custom_icon"
-                        size={"1.3em"}
-                        onClick={() => deleteCategory(val.category_name)}
-                      />
-                    </td>
+                    {allowedRoles.includes(userRole) && (
+                      <td className="table-icon">
+                        <RiDeleteBin6Fill
+                          className="icon custom_icon"
+                          size={"1.3em"}
+                          onClick={() => deleteCategory(val.category_name)}
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

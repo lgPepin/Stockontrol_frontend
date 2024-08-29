@@ -8,7 +8,7 @@ const SearchHeader = ({ text, pathCreate, createButtonName }) => {
   return (
     <div className="p-4 bg-warning">
       <div className="row">
-        <div className="offset-5 col-3 ">
+        <div className="offset-4 col-4 text-center">
           <Typography level={"h1"} text={text} />
         </div>
         <div className="offset-2 col-2">
@@ -16,10 +16,10 @@ const SearchHeader = ({ text, pathCreate, createButtonName }) => {
             <Button
               variant="secondary"
               size="lg"
-              className="text-black border-dark"
+              className="text-white border-dark"
             >
               {createButtonName}
-              <BsPlusCircle className="ms-2 text-black " size={"1.4em"} />
+              <BsPlusCircle className="ms-2" size={"1.4em"} />
             </Button>
           </Link>
         </div>
@@ -29,4 +29,3 @@ const SearchHeader = ({ text, pathCreate, createButtonName }) => {
 };
 
 export default SearchHeader;
-// <div className="d-flex justify-content-between p-4 bg-primary text-white">

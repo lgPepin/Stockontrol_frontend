@@ -38,6 +38,9 @@ const labels = {
     DATA_LOADING: {
       EXCEL_DATA_LOADING_PAGE: "Cargar un archivo Excel",
     },
+    LOGIN: {
+      LOGIN_PAGE: "Login Stockontrol",
+    },
   },
   PRODUCTS: {
     PRODUCT_NAME: () => (
@@ -126,6 +129,11 @@ const labels = {
     ),
   },
   USERS: {
+    USER_NAME: () => (
+      <>
+        USUARIO<sup>*</sup>
+      </>
+    ),
     USER_LASTNAME: () => (
       <>
         NOMBRE<sup>*</sup>
@@ -146,6 +154,24 @@ const labels = {
         ESTADO<sup>*</sup>
       </>
     ),
+    PASSWORD: () => (
+      <>
+        CONTRASEÑA<sup>*</sup>
+      </>
+    ),
+  },
+  LOGIN: {
+    LOGIN: "Login",
+    USER_NAME: () => (
+      <>
+        USUARIO<sup>*</sup>
+      </>
+    ),
+    PASSWORD: () => (
+      <>
+        CONTRASEÑA<sup>*</sup>
+      </>
+    ),
   },
   BUTTONS: {
     BACK_BUTTON: "Regresar",
@@ -161,6 +187,13 @@ const labels = {
     EDIT_LIST_CONTROL_STOCK_BUTTON: "Editar Lista de Control de Stock",
     ADD_PRODUCT: "Añadir Producto",
     HIDE_PRODUCTS_LIST: "Esconder la lista de productos",
+    SAVE_BUTTON: "Guardar",
+    DELETE_LIST_BUTTON: "Borrar Lista",
+    SEARCH_BUTTON: "Buscar",
+    LOAD_DATA_BUTTON: "Cargar datos",
+    CANCEL_BUTTON: "Cancelar",
+    GENERATE_LIST_BUTTON: "Generar lista",
+    LOGIN_BUTTON: "Login",
   },
 };
 

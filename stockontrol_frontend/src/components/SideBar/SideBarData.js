@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  FaHome,
-  FaBox,
-  FaUser,
-  FaListUl,
-  FaRegFileExcel,
-} from "react-icons/fa";
+import { FaBox, FaUser, FaListUl, FaRegFileExcel } from "react-icons/fa";
 import {
   RiArrowDownSFill,
   RiArrowUpSFill,
@@ -16,6 +10,7 @@ import { TbTruckDelivery, TbCategoryFilled } from "react-icons/tb";
 import { CgPlayButtonO } from "react-icons/cg";
 import { CgPlayListRemove } from "react-icons/cg";
 import { BsDatabaseFillDown } from "react-icons/bs";
+import { GrLogout } from "react-icons/gr";
 
 export const SideBarData = [
   {
@@ -24,26 +19,31 @@ export const SideBarData = [
     link: "/",
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
     subNav: [
       {
         title: "Crear",
         icon: <BsPlusCircle size={"1.3em"} />,
         link: "/product/create",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Buscar",
         icon: <BsSearch size={"1.3em"} />,
         link: "/",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Actualizar",
         icon: <BsFillPencilFill size={"1.3em"} />,
         link: "/",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Eliminar",
         icon: <RiDeleteBin6Fill size={"1.3em"} />,
         link: "/",
+        roles: ["Administrador"],
       },
     ],
   },
@@ -53,26 +53,31 @@ export const SideBarData = [
     link: "/supplier/search",
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
     subNav: [
       {
         title: "Crear",
         icon: <BsPlusCircle size={"1.3em"} />,
         link: "/supplier/create",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Buscar",
         icon: <BsSearch size={"1.3em"} />,
         link: "/supplier/search",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Actualizar",
         icon: <BsFillPencilFill size={"1.3em"} />,
         link: "/supplier/search",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Eliminar",
         icon: <RiDeleteBin6Fill size={"1.3em"} />,
         link: "/supplier/search",
+        roles: ["Administrador"],
       },
     ],
   },
@@ -82,26 +87,31 @@ export const SideBarData = [
     link: "/category/search",
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
     subNav: [
       {
         title: "Crear",
         icon: <BsPlusCircle size={"1.3em"} />,
         link: "/category/create",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Buscar",
         icon: <BsSearch size={"1.3em"} />,
         link: "/category/search",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Actualizar",
         icon: <BsFillPencilFill size={"1.3em"} />,
         link: "/category/search",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Eliminar",
         icon: <RiDeleteBin6Fill size={"1.3em"} />,
         link: "/category/search",
+        roles: ["Administrador"],
       },
     ],
   },
@@ -111,26 +121,31 @@ export const SideBarData = [
     link: "/user/search",
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
     subNav: [
       {
         title: "Crear",
         icon: <BsPlusCircle size={"1.3em"} />,
         link: "/user/create",
+        roles: ["Administrador"],
       },
       {
         title: "Buscar",
         icon: <BsSearch size={"1.3em"} />,
         link: "/user/search",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Actualizar",
         icon: <BsFillPencilFill size={"1.3em"} />,
         link: "/user/search",
+        roles: ["Administrador"],
       },
       {
         title: "Eliminar",
         icon: <RiDeleteBin6Fill size={"1.3em"} />,
         link: "/user/search",
+        roles: ["Administrador"],
       },
     ],
   },
@@ -140,31 +155,37 @@ export const SideBarData = [
     link: "/listaControlStock/search",
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
     subNav: [
       {
         title: "Crear",
         icon: <BsPlusCircle size={"1.3em"} />,
         link: "/listControlStock/create",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Buscar",
         icon: <BsSearch size={"1.3em"} />,
         link: "/listControlStock/search",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Actualizar",
         icon: <BsFillPencilFill size={"1.3em"} />,
         link: "/listControlStock/search",
+        roles: ["Administrador", "Empleado"],
       },
       {
         title: "Eliminar",
         icon: <RiDeleteBin6Fill size={"1.3em"} />,
         link: "/listControlStock/search",
+        roles: ["Administrador"],
       },
       {
         title: "Activar",
         icon: <CgPlayButtonO size={"1.3em"} />,
         link: "/listControlStock/search",
+        roles: ["Administrador", "Empleado"],
       },
     ],
   },
@@ -174,25 +195,44 @@ export const SideBarData = [
     link: "/listaNegativeStock/search",
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
     subNav: [
       {
         title: "Generar lista",
         icon: <CgPlayButtonO size={"1.3em"} />,
         link: "/listNegativeStock/generate",
+        roles: ["Administrador", "Empleado"],
       },
     ],
   },
   {
-    title: "Integración de datos",
+    title: "Cargar data",
     icon: <BsDatabaseFillDown size={"2em"} />,
     link: "/dataIntegration/search",
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
     subNav: [
       {
         title: "Cargar archivo Excel",
         icon: <FaRegFileExcel size={"1.3em"} />,
         link: "/dataIntegration/load",
+        roles: ["Administrador", "Empleado"],
+      },
+    ],
+  },
+  {
+    title: "Logout",
+    icon: <GrLogout size={"2em"} />,
+    link: "/login",
+    iconClosed: <RiArrowDownSFill />,
+    iconOpened: <RiArrowUpSFill />,
+    roles: ["Administrador", "Empleado"],
+    subNav: [
+      {
+        title: "Logout",
+        icon: <GrLogout size={"1.3em"} />,
+        roles: ["Administrador", "Empleado"],
       },
     ],
   },

@@ -13,7 +13,7 @@ const UpdateHeader = ({ text, pathSearch, backButtonName }) => {
             <Button
               variant="secondary"
               size="lg"
-              className="text-black border-dark"
+              className="text-white border-dark"
             >
               <BsArrowLeftCircle className="me-2" size={"1.4em"} />
               {backButtonName}
@@ -21,7 +21,7 @@ const UpdateHeader = ({ text, pathSearch, backButtonName }) => {
           </Link>
         </div>
 
-        <div className="offset-3 col-4">
+        <div className="offset-2 col-4 text-center">
           <Typography level={"h1"} text={text} />
         </div>
       </div>

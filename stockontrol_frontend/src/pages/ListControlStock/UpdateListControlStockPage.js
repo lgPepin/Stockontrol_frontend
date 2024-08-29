@@ -10,7 +10,7 @@ import Button from "react-bootstrap/Button";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { BsPlusCircle } from "react-icons/bs";
 
-const UpdateListControlStockPage = () => {
+const UpdateListControlStockPage = ({ onLogout }) => {
   const location = useLocation();
   const listControlStock = location.state?.listControlStock || {};
   const [listControlStockName, setListControlStockName] = useState(
@@ -38,15 +38,18 @@ const UpdateListControlStockPage = () => {
     return listControlStockName.trim() !== "";
   };
 
-  const checkNameUniqueness = () => {
+  const checkNameUniqueness = (currentListId) => {
     const normalizedListName = normalizeName(listControlStockName);
 
-    return Axios.get("http://localhost:8080/api/v1/checkName", {
-      params: { name: normalizedListName },
+    return Axios.get("http://localhost:8080/api/v1/checkNameUpdate", {
+      params: { name: normalizedListName, excludeId: currentListId },
     })
       .then((response) => response.data.isUnique)
       .catch((error) => {
-        console.error("Error checking list name uniqueness:", error);
+        console.error(
+          "Error al verificar que el nombre de la lista es único:",
+          error
+        );
         return false;
       });
   };
@@ -57,12 +60,15 @@ const UpdateListControlStockPage = () => {
         "Se necesita un nombre a la lista para actualizarla"
       );
       setMessageType("danger");
+      setTimeout(() => {
+        setConfirmationMessage("");
+      }, 5000);
       return;
     }
 
     const validProducts = products.filter((product) => product.product_id);
 
-    checkNameUniqueness().then((isUnique) => {
+    checkNameUniqueness(stockControlListId).then((isUnique) => {
       if (!isUnique) {
         setConfirmationMessage(
           "El nombre de la lista ya existe, elija un nombre diferente."
@@ -195,7 +201,7 @@ const UpdateListControlStockPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-5">
           <div className="frame">
@@ -268,15 +274,15 @@ const UpdateListControlStockPage = () => {
             <Button
               variant="secondary"
               size="lg"
-              className="text-black border-dark mt-5 offset-3 col-2"
+              className="text-white border-dark mt-5 offset-3 col-2"
               onClick={submitList}
             >
-              Guardar
+              {labels.BUTTONS.SAVE_BUTTON}
             </Button>
             <Button
               variant="secondary"
               size="lg"
-              className="text-black border-dark mt-5 offset-2 col-2"
+              className="text-white border-dark mt-5 offset-2 col-2"
               onClick={toggleProductsList}
             >
               {showProductsList
@@ -349,18 +355,18 @@ const UpdateListControlStockPage = () => {
               <Button
                 variant="secondary"
                 size="lg"
-                className="text-black border-dark mt-5 offset-3 col-2"
+                className="text-white border-dark mt-5 offset-3 col-2"
                 onClick={deleteResultsList}
               >
-                Borrar Lista
+                {labels.BUTTONS.DELETE_LIST_BUTTON}
               </Button>
               <Button
                 variant="secondary"
                 size="lg"
-                className="text-black border-dark mt-5 offset-2 col-2"
+                className="text-white border-dark mt-5 offset-2 col-2"
                 onClick={searchProduct}
               >
-                Buscar
+                {labels.BUTTONS.SEARCH_BUTTON}
               </Button>
 
               <div className="separator my-4 offset-1 col-10"></div>

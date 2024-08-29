@@ -11,8 +11,9 @@ import { FaEye } from "react-icons/fa";
 import { CgPlayButtonO } from "react-icons/cg";
 import Button from "react-bootstrap/esm/Button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { fetchUserRole } from "../../service/ConnectedUserData";
 
-const SearchListControlStockPage = () => {
+const SearchListControlStockPage = ({ onLogout }) => {
   const [listControlStockName, setListControlStockName] = useState("");
   const [listsControlStockList, setListsControlStockList] = useState([]);
   const [warningMessage, setWarningMessage] = useState("");
@@ -20,8 +21,8 @@ const SearchListControlStockPage = () => {
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  // const [refresh, setRefresh] = useState(false);
-
+  const [userRole, setUserRole] = useState(null);
+  const allowedRoles = ["Administrador"];
   const location = useLocation();
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -35,10 +36,6 @@ const SearchListControlStockPage = () => {
       }, 5000);
     }
   }, [location.state]);
-
-  // useEffect(() => {
-  //   searchListControlStock();
-  // }, [refresh]);
 
   const goToDetailsListControlStockPage = (listControlStock) => {
     navigate("/listControlStock/details", { state: { listControlStock } });
@@ -147,7 +144,6 @@ const SearchListControlStockPage = () => {
         { status: "Activa" }
       )
         .then(() => {
-          // setRefresh((prev) => !prev);
           navigate("/listControlStock/active", { state: { listControlStock } });
         })
         .catch((error) => {
@@ -168,6 +164,19 @@ const SearchListControlStockPage = () => {
     }
   };
 
+  useEffect(() => {
+    const getUserRole = async () => {
+      try {
+        const role = await fetchUserRole();
+        setUserRole(role);
+      } catch (error) {
+        console.error("Error al recuperar el rol del usuario", error);
+      }
+    };
+
+    getUserRole();
+  }, []);
+
   return (
     <>
       <SearchHeader
@@ -177,7 +186,7 @@ const SearchListControlStockPage = () => {
       />
       <div className="row align-items-start container_principal">
         <div className="col-2 sideBar_container">
-          <SideBar />
+          <SideBar onLogout={onLogout} />
         </div>
         <div className="offset-1 col-9 mt-4 ">
           <div className="value_label_container mb-4">
@@ -213,21 +222,27 @@ const SearchListControlStockPage = () => {
               {warningMessage}
             </div>
           )}
+
+          {successMessage && (
+            <div className="alert alert-success fs-3 mt-4" role="alert">
+              {successMessage}
+            </div>
+          )}
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
+            className="text-white border-dark mt-5 offset-2 col-2"
             onClick={deleteResultsList}
           >
-            Borrar Lista
+            {labels.BUTTONS.DELETE_LIST_BUTTON}
           </Button>
           <Button
             variant="secondary"
             size="lg"
-            className="text-black border-dark mt-5 offset-2 col-2"
+            className="text-white border-dark mt-5 offset-2 col-2"
             onClick={searchListControlStock}
           >
-            Buscar
+            {labels.BUTTONS.SEARCH_BUTTON}
           </Button>
           {errorMessage && (
             <div className="alert alert-danger fs-3 mt-4" role="alert">
@@ -235,12 +250,6 @@ const SearchListControlStockPage = () => {
             </div>
           )}
           <div className="separator my-4 col-10"></div>
-
-          {successMessage && (
-            <div className="alert alert-success fs-3 mt-4" role="alert">
-              {successMessage}
-            </div>
-          )}
 
           {noResultsMessage ? (
             <Typography
@@ -256,7 +265,9 @@ const SearchListControlStockPage = () => {
                   <th className="col-2">Estado</th>
                   <th className="col-1 table-icon">Ver</th>
                   <th className="col-1 table-icon">Editar</th>
-                  <th className="col-1 table-icon">Eliminar</th>
+                  {allowedRoles.includes(userRole) && (
+                    <th className="col-1 table-icon">Eliminar</th>
+                  )}
                   <th className="col-1 table-icon">Activar</th>
                 </tr>
               </thead>
@@ -280,25 +291,31 @@ const SearchListControlStockPage = () => {
                       />
                     </td>
                     <td className="table-icon">
-                      <BsFillPencilFill
-                        className="icon custom_icon"
-                        size={"1.3em"}
-                        onClick={() => goToUpdateListControlStockPage(list)}
-                      />
+                      {list.stock_control_list_status === "No activada" && (
+                        <BsFillPencilFill
+                          className="icon custom_icon"
+                          size={"1.3em"}
+                          onClick={() => goToUpdateListControlStockPage(list)}
+                        />
+                      )}
                     </td>
-                    <td className="table-icon">
-                      <RiDeleteBin6Fill
-                        className="icon custom_icon"
-                        size={"1.3em"}
-                        onClick={() =>
-                          deleteListControlStock(
-                            list.stock_control_list_id,
-                            list.stock_control_list_name,
-                            list
-                          )
-                        }
-                      />
-                    </td>
+                    {allowedRoles.includes(userRole) && (
+                      <td className="table-icon">
+                        {list.stock_control_list_status === "No activada" && (
+                          <RiDeleteBin6Fill
+                            className="icon custom_icon"
+                            size={"1.3em"}
+                            onClick={() =>
+                              deleteListControlStock(
+                                list.stock_control_list_id,
+                                list.stock_control_list_name,
+                                list
+                              )
+                            }
+                          />
+                        )}
+                      </td>
+                    )}
                     <td className="table-icon">
                       {list.stock_control_list_status === "No activada" && (
                         <CgPlayButtonO
